@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import SideBar from "../sideBar/SideBar";
 import { clearCart } from "../../redux/cartSlice";
+import { MdFavorite } from "react-icons/md";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -177,6 +178,9 @@ const Header = () => {
                 </Popover.Panel>
               </Transition>
             </Popover>
+            <div className="max-lg:block cursor-pointer">
+              <MdFavorite className="text-3xl" />
+            </div>
             {/* cart logo */}
             <div className="cart-container">
               <IoIosCart
@@ -186,6 +190,7 @@ const Header = () => {
               <span className="cart-count">{projectNumber}</span>
             </div>
           </div>
+
           <div
             className="hidden max-lg:block cursor-pointer"
             onClick={() => {
