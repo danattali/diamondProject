@@ -1,25 +1,26 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const crypto = require("crypto");
 require("dotenv").config();
 function authentificationToken(req, res, next) {
-    const token = req.header("auth-token");
-    if (!token) return res.status(401).json({ message: "Access Denied" });
-    try {
-        const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-        req.user = verified;
-        next();
-    } catch (err) {
-        res.status(400).json({ message: "Invalid Token" });
-    }
-    }
+  const token = req.header("auth-token");
+  if (!token) return res.status(401).json({ message: "Access Denied" });
+  try {
+    const verified = jwt.verify(token, process.env.TOKEN_SECRET);
+    req.user = verified;
+    next();
+  } catch (err) {
+    res.status(400).json({ message: "Invalid Token" });
+  }
+}
 const rules = {
-    user: {
-        can: ['read'],
-    },
-    admin: {
-        can: ['read', 'write'],
-    },
+  user: {
+    can: ["read"],
+  },
+  admin: {
+    can: ["read", "write"],
+  },
 };
 const register = async (req, res) => {
   try {
