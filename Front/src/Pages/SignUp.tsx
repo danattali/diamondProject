@@ -50,7 +50,7 @@ const SignUp = () => {
     }
   };
   return (
-    <div className="max-w-md mx-auto mt-10 ">
+    <div className="max-w-md mx-auto pt-20 mt-10 ">
       <h2 className="text-3xl font-bold text-center mb-6">Register</h2>
       <form
         onSubmit={handleSubmit(handleSignUp)}

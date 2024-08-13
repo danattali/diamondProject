@@ -54,10 +54,10 @@ const SignIn = () => {
   };
   return (
     <div className="max-w-md mx-auto mt-10 ">
-      <h2 className="text-3xl font-bold text-center mb-6">Log In</h2>
+      <h2 className="text-3xl font-bold text-center mb-10 pt-20">Log In</h2>
       <form
         onSubmit={handleSubmit(handleSignIn)}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+        className="bg-white shadow-md rounded px-8 pt-4 pb-8 mb-4"
       >
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold m-2">
