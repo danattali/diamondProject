@@ -30,7 +30,7 @@ const BillingForm: React.FC = () => {
     const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
 
     const handleSubmitOrder = async () => {
-        debugger;
+      
         const _id = localStorage.getItem('_id');
         try {
             await axios.post('http://localhost:4000/orders', {

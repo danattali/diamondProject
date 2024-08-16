@@ -20,7 +20,8 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const handleSignIn: SubmitHandler<Inputs> = async (data) => {
-    try {debugger
+    try {
+      ``;
       const response = await axios.post("http://localhost:4000/auth/login", {
         userEmail: data.email, // Updated to match the backend field
         password: data.password,
@@ -51,7 +52,12 @@ const SignIn = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 ">
+    <div
+      className="max-w-md mx-auto mt-10 "
+      style={{
+        minHeight: "63vh",
+      }}
+    >
       <h2 className="text-3xl font-bold text-center mb-10 pt-20">Log In</h2>
       <form
         onSubmit={handleSubmit(handleSignIn)}

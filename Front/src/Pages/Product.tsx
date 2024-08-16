@@ -6,10 +6,11 @@ import ProductModal from "../components/Modal/ProductModal";
 import { addItem } from "../redux/cartSlice";
 import axios from "axios";
 import { MdFavorite } from "react-icons/md";
+import { addFavourite } from "../redux/favouriteSlice";
 
 // Import images
 interface Product {
-  id: number;
+  _id: string;
   name: string;
   price: number;
   description: string;
@@ -21,14 +22,8 @@ const Product = () => {
     value: "all",
     label: "All Categories",
   });
-  const [favourite, setFavourite] = React.useState<Product>([]);
-  const handleAddToFavourite = (product: Product) => {
-    if (!favourite) {  
-        
-    const isFavourite = favourite.some((item) => item.id === product.id);
 
-    }
-  };
+
   const [selectProduct, setSelectProduct] = React.useState<ProductType | null>(
     null
   );
@@ -80,11 +75,19 @@ const Product = () => {
     setIsModalOpen(false);
     setSelectProduct(null);
   };
+  const handleAddToFavourite = (product: Product) => {
+
+  
+ dispatch(addFavourite(product));
+    
+  };
+
+  
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="text-center">
-        <h1 className="text-3xl font-semibold">Products</h1>
+        <h1 className="text-3xl font-semibold mt-20">Products</h1>
         <p className="text-gray-500">Explore our wide range of products.</p>
       </div>
       <div className="mt-10">
@@ -113,7 +116,10 @@ const Product = () => {
           >
             <div className="flex flex-col items-center">
               <div className="flex w-full flex justify-end">
-                <MdFavorite className="text-red-500" />
+                <MdFavorite
+                  className="text-red-500"
+                  onClick={() => handleAddToFavourite(product)}
+                />
               </div>
               <img
                 src={product.image}

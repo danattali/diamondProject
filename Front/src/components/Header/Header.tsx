@@ -7,15 +7,16 @@ import { Popover, Transition } from "@headlessui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import SideBar from "../sideBar/SideBar";
-import FavoriteSideBar from "../sideBar/favoriteSideBar";
+import FavoriteSideBar from "../sideBar/FavoriteSideBar";
 import { clearCart } from "../../redux/cartSlice";
 import { MdFavorite } from "react-icons/md";
+import { setSearch } from "../../redux/cartSlice";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [login, setLogin] = useState("");
   const [userType, setUserType] = useState("");
-  const [isPersonMenuOpen, setIsPersonMenuOpen] = useState(false); // New state for IoMdPerson menu
+  const [isPersonMenuOpen, setIsPersonMenuOpen] = useState(false);
 
   const projectNumber = useSelector((state: RootState) =>
     state?.cart?.items?.reduce(
@@ -28,6 +29,11 @@ const Header = () => {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const toggleSideBar = () => {
     setIsSideBarOpen(!isSideBarOpen);
+  };
+  const handdleSearch = (e: any) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    dispatch(setSearch(e.target.value));
   };
   const [isFavoriteSideBarOpen, setIsFavoriteSideBarOpen] = useState(false);
   const favoriteToggleSideBar = () => {
@@ -111,6 +117,7 @@ const Header = () => {
                 type="search"
                 className="text-xs peer cursor-pointer relative z-10 h-8 w-10 rounded-lg border bg-transparent pr-6 outline-none focus:rounded-r-none focus:w-full focus:cursor-text focus:border-taupeGray focus:px-3"
                 placeholder="search..."
+                onChange={handdleSearch}
               />
               <button className="absolute top-0 right-0 bottom-0 my-auto h-8 w-10 px-3 bg-slate-300 rounded-lg peer-focus:relative peer-focus:rounded-l-none">
                 <svg
@@ -187,14 +194,14 @@ const Header = () => {
             <div className="max-lg:block cursor-pointer">
               <MdFavorite
                 className="text-3xl"
-                onClick={favoriteToggleSideBar}
+                onClick={favoriteToggleSideBar} // Opens FavoriteSideBar
               />
             </div>
             {/* cart logo */}
             <div className="cart-container">
               <IoIosCart
                 className="text-3xl cursor-pointer"
-                onClick={toggleSideBar}
+                onClick={toggleSideBar} // Opens SideBar
               />
               <span className="cart-count">{projectNumber}</span>
             </div>
