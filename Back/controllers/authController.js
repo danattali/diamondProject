@@ -50,19 +50,17 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { userEmail, password } = req.body;
-    console.log(req.body);
     const user = await User.findOne({ userEmail });
     console.log(user);
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid Credentials" });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(400).json({ message: "Invalid Credentials" });
     }
 
-    res.status(200).json({ user });
+    res.status(200).json({ message: "Login successful", user });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }

@@ -7,6 +7,7 @@ import { Popover, Transition } from "@headlessui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import SideBar from "../sideBar/SideBar";
+import FavoriteSideBar from "../sideBar/favoriteSideBar";
 import { clearCart } from "../../redux/cartSlice";
 import { MdFavorite } from "react-icons/md";
 
@@ -27,6 +28,10 @@ const Header = () => {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const toggleSideBar = () => {
     setIsSideBarOpen(!isSideBarOpen);
+  };
+  const [isFavoriteSideBarOpen, setIsFavoriteSideBarOpen] = useState(false);
+  const favoriteToggleSideBar = () => {
+    setIsFavoriteSideBarOpen(!isFavoriteSideBarOpen);
   };
 
   const typeUser = localStorage.getItem("userType");
@@ -178,8 +183,12 @@ const Header = () => {
                 </Popover.Panel>
               </Transition>
             </Popover>
+            {/* favorite logo */}
             <div className="max-lg:block cursor-pointer">
-              <MdFavorite className="text-3xl" />
+              <MdFavorite
+                className="text-3xl"
+                onClick={favoriteToggleSideBar}
+              />
             </div>
             {/* cart logo */}
             <div className="cart-container">
@@ -227,6 +236,10 @@ const Header = () => {
           </nav>
         </div>
       )}
+      <FavoriteSideBar
+        isOpen={isFavoriteSideBarOpen}
+        onClose={favoriteToggleSideBar}
+      />
       <SideBar isOpen={isSideBarOpen} onClose={toggleSideBar} />
     </>
   );

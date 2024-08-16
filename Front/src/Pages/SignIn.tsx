@@ -1,42 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/authSlice";
+
 type Inputs = {
   email: string;
   password: string;
 };
 
 const SignIn = () => {
-  const [email, setUserEmail] = useState("");
-  const [password, setPassword] = useState("");
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSignIn = async (e: any) => {
-    e.preventDefault();
-    try {
+
+  const handleSignIn: SubmitHandler<Inputs> = async (data) => {
+    try {debugger
       const response = await axios.post("http://localhost:4000/auth/login", {
-        userEmail: email,
-        password: password,
+        userEmail: data.email, // Updated to match the backend field
+        password: data.password,
       });
 
       if (response.data) {
-        const { _id, fullName, userEmail, rules } = response.data.user;
+        const { _id, fullName, email, rules } = response.data.user;
         const user = {
           _id: _id,
           fullName: fullName,
-          email: userEmail,
+          email: email,
           rules: rules,
         };
-        console.log(user);
 
         dispatch(login(user));
         localStorage.setItem("login", "true");
@@ -52,6 +49,7 @@ const SignIn = () => {
       console.log(error);
     }
   };
+
   return (
     <div className="max-w-md mx-auto mt-10 ">
       <h2 className="text-3xl font-bold text-center mb-10 pt-20">Log In</h2>
@@ -61,13 +59,12 @@ const SignIn = () => {
       >
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold m-2">
-            email:{" "}
+            Email:
           </label>
           <input
             type="email"
             {...register("email", { required: true })}
             placeholder="mail"
-            onChange={(e) => setUserEmail(e.target.value)}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
           {errors.email && (
@@ -76,12 +73,11 @@ const SignIn = () => {
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold m-2">
-            Password:{" "}
+            Password:
           </label>
           <input
             type="password"
             {...register("password", { required: true })}
-            onChange={(e) => setPassword(e.target.value)}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
           {errors.password && (
