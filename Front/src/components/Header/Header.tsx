@@ -68,8 +68,8 @@ const Header = () => {
   const navLinksAdmin = [
     { href: "/admin/Management", label: "Admin" },
     { href: "/admin/products", label: "Products" },
-    { href: "/users", label: "Users" },
-    { href: "/orders", label: "Orders" },
+    { href: "/admin/AllUsers", label: "Users" },
+    { href: "/admin/AllOrder", label: "Orders" },
     { href: "/", label: "Log Out", onClick: logout },
   ];
 

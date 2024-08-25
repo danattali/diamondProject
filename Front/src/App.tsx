@@ -17,6 +17,8 @@ import PurchaseHistory from "./Pages/UserPortal/PurchaseHistory";
 import PaymentMethod from "./Pages/UserPortal/PaymentMethod";
 import PayCreditCard from "./Pages/PayCreditCard";
 import BillingPage from "./Pages/BillingPage";
+import AllUsers from "./Pages/admin/AllUsers";
+import AllOrder from "./Pages/admin/Orders";
 
 function App() {
   return (
@@ -36,8 +38,11 @@ function App() {
             <Route path="/ContactUs" element={<ContactUs />} />
             <Route path="/Admin/Management" element={<Management />} />
             <Route path="/Admin/Products" element={<AdminProduct />} />
+            <Route path="/Admin/AllUsers" element={<AllUsers />} />
+            <Route path="/Admin/AllOrder" element={<AllOrder />} />
             <Route path="/Checkout" element={<CartPage />} />
             <Route path="/UserPortal/UserProfile" element={<UserProfile />} />
+
             <Route
               path="/UserPortal/PurchaseHistory"
               element={<PurchaseHistory />}
