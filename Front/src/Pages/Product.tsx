@@ -112,43 +112,44 @@ const Product = () => {
         {filteredProducts.map((product) => (
           <div
             key={product.id}
-            className="bg-white shadow-md p-6 rounded-lg hover:shadow-lg transition-shadow duration-300"
+            className="bg-white shadow-md p-6 rounded-lg hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between"
           >
-            <div className="flex flex-col items-center">
-              <div className="flex w-full flex justify-end">
+            <div>
+              <div className="flex justify-end">
                 <MdFavorite
-                  className="text-red-500"
+                  className="text-red-500 cursor-pointer"
                   onClick={() => handleAddToFavourite(product)}
                 />
               </div>
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-32 h-32 object-cover rounded-lg mb-4"
+                className="w-32 h-32 object-cover rounded-lg mb-4 mx-auto"
               />
               <div className="text-center">
                 <h3 className="text-xl font-semibold">{product.name}</h3>
                 <p className="text-gray-500 text-lg">${product.price}</p>
                 <p className="text-gray-500">{product.description}</p>
-                <div className="flex justify-center space-x-3 mt-4">
-                  <button
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline-none whitespace-nowrap"
-                    onClick={() => openModal(product)}
-                  >
-                    View Detail
-                  </button>
-                  <button
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline-none whitespace-nowrap"
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
               </div>
+            </div>
+            <div className="mt-auto flex justify-center space-x-3">
+              <button
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline-none whitespace-nowrap"
+                onClick={() => openModal(product)}
+              >
+                View Detail
+              </button>
+              <button
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline-none whitespace-nowrap"
+                onClick={() => handleAddToCart(product)}
+              >
+                Add to Cart
+              </button>
             </div>
           </div>
         ))}
       </div>
+
       {isModalOpen && selectProduct && (
         <ProductModal
           isOpen={isModalOpen}
