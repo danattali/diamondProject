@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { set } from "react-hook-form";
 
 interface User {
   _id: string;
@@ -8,27 +9,61 @@ interface User {
   telephone: string;
   address: string;
 }
+interface ShippingAddress {
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+interface OrderItems {
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  product: string;
+}
 interface Order {
   _id: string;
-  shippingAddress: string;
+  shippingAddress: ShippingAddress;
   orderNumber: string;
   orderDate: string;
-  orderItems: string;
+  orderItems: OrderItems[];
   createdAt: string;
+  user: User;
 }
 
 const AllOrder = () => {
-  const [users, setUsers] = React.useState<User[]>([]);
+  const [orders, setOrders] = React.useState<Order[]>([]);
+  const [orderNumber, setOrderNumber] = React.useState("");
+
   React.useEffect(() => {
-    axios
-      .get("http://localhost:4000/auth")
-      .then((response) => {
-        console.log(response.data);
-        setUsers(response.data.users);
-      })
-      .catch((error) => {
+    const fetchAllOrders = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:4000/orders/AllOrders"
+        );
+        const ordersWithUsers = await Promise.all(
+          response.data.orders.map(async (order: Order) => {
+            const userResponse = await axios.get(
+              `http://localhost:4000/auth/${order.user}`
+            );
+            setOrderNumber(response.data.orders.length);
+            return {
+              ...order,
+              
+
+              user: userResponse.data.user,
+              orderItems: order.orderItems.map((item) => item.name),
+            };
+          })
+        );
+        setOrders(ordersWithUsers);
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchAllOrders();
   }, []);
 
   return (
@@ -58,22 +93,24 @@ const AllOrder = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((users, index) => (
+            {orders.map((order, index) => (
               <tr
-                key={index}
+                key={order._id}
                 className={`${
                   index % 2 === 0 ? "bg-white" : "bg-gray-50"
                 } border-b dark:bg-gray-800 dark:border-gray-700`}
               >
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  {users.fullName}
-                </th>
-                <td className="px-6 py-4">{users.userEmail}</td>
-                <td className="px-6 py-4">{users.telephone}</td>
-                <td className="px-6 py-4">{users.address}</td>
+                <td className="px-6 py-4">{index+1}</td>
+                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {order.user.fullName}
+                </td>
+                <td className="px-6 py-4">{order.orderItems.join(", ")}</td>
+                <td className="px-6 py-4">
+                  {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
+                </td>
+                <td className="px-6 py-4">
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </td>
               </tr>
             ))}
           </tbody>
