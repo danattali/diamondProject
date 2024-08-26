@@ -48,11 +48,14 @@ const register = async (req, res) => {
   }
 };
 const getUserByToken = async (req, res) => {
+  const token = req.header("auth-token");
+  if(!token) return res.status(401).json({message: "Access Denied"});
   try {
-    const user = await User.findById(req.user._id);
-    res.status(200).json({ user });
+    const verified = jwt.verify(token, process.env.TOKEN_SECRET);
+    const user = await User.findById(verified._id);
+    res.status(200).json({user});
   } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(400).json({message: "Invalid Token"});
   }
 }
 
@@ -95,4 +98,4 @@ const userById = async (req, res) => {
   }
 };
 
-module.exports = { register, login, authentificationToken, allUsers, userById };
+module.exports = { register, login, authentificationToken, allUsers, userById, getUserByToken };
