@@ -2,7 +2,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import axios from "axios";
+import axios from "../utils/axiosConfig";
 import { fetchUserDetails, login } from "../redux/authSlice";
 import { AppDispatch } from "../redux/store"; // Make sure the path is correct
 
@@ -22,13 +22,15 @@ const SignIn = () => {
 
   const handleSignIn: SubmitHandler<Inputs> = async (data) => {
     try {
-      const response = await axios.post("http://localhost:4000/auth/login", {
+      const response = await axios.post("/auth/login", {
         userEmail: data.email,
         password: data.password,
       });
 
       const userData = response.data;
       if (userData.token) {
+        console.log("Token found:", userData.token);
+
         localStorage.setItem("token", userData.token);
         dispatch(login(userData.user)); // Dispatch the login action with user data
         // Fetch additional user details if necessary

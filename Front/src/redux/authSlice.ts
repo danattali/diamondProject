@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios from "../utils/axiosConfig";
 
 interface User {
   fullName: string;
@@ -11,6 +12,7 @@ interface AuthState {
   isLoggedIn: boolean;
   error: string | null;
 }
+
 export const fetchUserDetails = createAsyncThunk<
   User,
   void,
@@ -19,44 +21,38 @@ export const fetchUserDetails = createAsyncThunk<
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      throw new Error("No token found");
+      return rejectWithValue("No token found");
     }
     console.log("Token before request:", token);
 
-    const response = await fetch("http://localhost:4000/auth/user", {
-      method: "GET",
+    // Make the request with Axios
+    const response = await axios.get("/auth/user", {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
     });
 
     console.log("Response status:", response.status);
     console.log("Response headers:", response.headers);
 
-    const responseText = await response.text();
-    console.log("Response text:", responseText);
-
-    if (!response.ok) {
-      let errorData;
-      try {
-        errorData = JSON.parse(responseText);
-      } catch (e) {
-        errorData = { message: responseText };
-      }
-      console.error("Fetch error:", errorData);
-      throw new Error(errorData.message || "Failed to fetch user details");
-    }
-
-    const data = JSON.parse(responseText);
-    return data;
+    // Return the data directly
+    return response.data;
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
-    console.error("Error in fetchUserDetails:", errorMessage);
-    return rejectWithValue(errorMessage);
+    // Handle errors
+    if (axios.isAxiosError(error)) {
+      // Axios error
+      console.error("Error response:", error.response?.data);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch user details"
+      );
+    } else {
+      // Non-Axios error
+      console.error("Error:", error);
+      return rejectWithValue("Failed to fetch user details");
+    }
   }
 });
+
 const authSlice = createSlice({
   name: "auth",
   initialState: { user: null, isLoggedIn: false, error: null } as AuthState,

@@ -8,6 +8,7 @@ import SignUp from "./Pages/SignUp";
 import Management from "./Pages/admin/Management";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
+import "../src/utils/axiosConfig";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AdminProduct from "./Pages/admin/AdminProduct";
