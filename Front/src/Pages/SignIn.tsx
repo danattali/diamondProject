@@ -28,6 +28,7 @@ const SignIn = () => {
       });
 
       if (response.data) {
+        debugger;
         const { _id, fullName, email, rules } = response.data.user;
         const user = {
           _id: _id,

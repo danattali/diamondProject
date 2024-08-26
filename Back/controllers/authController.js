@@ -47,6 +47,15 @@ const register = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+const getUserByToken = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 const login = async (req, res) => {
   try {
     const { userEmail, password } = req.body;
@@ -59,8 +68,12 @@ const login = async (req, res) => {
     if (!validPassword) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
+    const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
+      expiresIn: 240,
+      
+    });
 
-    res.status(200).json({ message: "Login successful", user });
+   return res.status(200).json({ message: "Login successful", token });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }
