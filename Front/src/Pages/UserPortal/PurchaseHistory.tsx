@@ -42,21 +42,26 @@ const PurchaseHistory = () => {
   }, [getUserId]);
   React.useEffect(() => {
     const fetchOrderById = async () => {
-     
+      if (userId) {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/orders/orderByUserId/${userId}`
+          );
+          console.log(response.data.orders);
 
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/orders/getOrderByUserId/${userId}`
-        );
-
-        setOrders(response.data.orders);
-      } catch (error) {
-        console.log(error);
+          setOrders(response.data.orders);
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
 
     fetchOrderById();
   }, [userId]);
+  const formatDate = (date: string) => {
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <div className="relative overflow-x-auto min-h-screen">
@@ -92,12 +97,26 @@ const PurchaseHistory = () => {
               >
                 <td className="px-6 py-4">{index + 1}</td>
 
-                <td className="px-6 py-4">{order.orderItems.join(", ")}</td>
+                <td className="px-6 py-4">
+                  {order.orderItems.map((item, index) => (
+                    <div key={index} className="flex items-center">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-12 h-12 object-cover"
+                      />
+                      <span className="mx-2 font-semibold">{item.name}</span>
+                      <span className="mx-2 font-semibold">
+                        {item.quantity} x {item.price}$
+                      </span>
+                    </div>
+                  ))}
+                </td>
                 <td className="px-6 py-4">
                   {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
                 </td>
                 <td className="px-6 py-4">
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {formatDate(order.createdAt.split("T")[0])}
                 </td>
               </tr>
             ))}

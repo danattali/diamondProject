@@ -51,7 +51,7 @@ const getOrders = async (req, res) => {
   }
 };
 const getOrderByUserId = async (req, res) => {
-  console.log(res);
+  console.log(req);
   try {
     const orders = await Order.find({ user: req.params.id });
     res.status(200).json({ orders });

@@ -88,7 +88,6 @@ const Header = () => {
   const loggedUser = [
     { href: "/UserPortal/UserProfile", label: "Profile" },
     { href: "/UserPortal/PurchaseHistory", label: "Purchase History" },
-    { href: "/UserPortal/PaymentMethod", label: "Payment Methods" },
     { href: "/", label: "Log Out", onClick: logout },
   ];
 
