@@ -1,9 +1,10 @@
 import React from "react";
-import axios from "axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/authSlice";
+import axios from "axios";
+import { fetchUserDetails, login } from "../redux/authSlice";
+import { AppDispatch } from "../redux/store"; // Make sure the path is correct
 
 type Inputs = {
   email: string;
@@ -16,45 +17,36 @@ const SignIn = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const handleSignIn: SubmitHandler<Inputs> = async (data) => {
     try {
-      ``;
       const response = await axios.post("http://localhost:4000/auth/login", {
-        userEmail: data.email, // Updated to match the backend field
+        userEmail: data.email,
         password: data.password,
       });
 
-      if (response.data) {
-        debugger;
-        const { _id, fullName, email, rules } = response.data.user;
-        const user = {
-          _id: _id,
-          fullName: fullName,
-          email: email,
-          rules: rules,
-        };
-
-        dispatch(login(user));
-        localStorage.setItem("login", "true");
-        localStorage.setItem("userType", user.rules);
-        localStorage.setItem("userEmail", user.email);
-        localStorage.setItem("userName", user.fullName);
-        localStorage.setItem("_id", user._id);
-        navigate("/");
-
-        console.log(response);
+      const userData = response.data;
+      if (userData.token) {
+        localStorage.setItem("token", userData.token);
+        dispatch(login(userData.user)); // Dispatch the login action with user data
+        // Fetch additional user details if necessary
+        await dispatch(fetchUserDetails());
+        navigate("/"); // Navigate to the dashboard after login
+      } else {
+        console.log("No token found");
       }
+      // Dispatch the login action with user data
     } catch (error) {
-      console.log(error);
+      console.error("Login failed:", error);
+      // Handle error appropriately (e.g., show a message to the user)
     }
   };
 
   return (
     <div
-      className="max-w-md mx-auto mt-10 "
+      className="max-w-md mx-auto mt-10"
       style={{
         minHeight: "63vh",
       }}
