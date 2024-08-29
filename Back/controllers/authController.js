@@ -43,7 +43,7 @@ const register = async (req, res) => {
       password: hashedPassword,
       telephone,
       address,
-      rules,
+      rules: { user: { can: ["read"] } },
     });
     await newUser.save();
     res.status(201).json({ message: "User registered successfully" });
@@ -53,6 +53,8 @@ const register = async (req, res) => {
 };
 
 const getUserByToken = async (req, res) => {
+  console.log(req.user);
+  console.log("userId");
   const userId = req.user._id; // Assuming req.user._id is the user ID extracted from the token
 
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {

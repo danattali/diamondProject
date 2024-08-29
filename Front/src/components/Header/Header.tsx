@@ -93,7 +93,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="sm:px-8 px-4 py-2 z-10 w-full absolute bg-white">
+      <header className="sm:px-8 px-4 py-2 z-10 w-full text-white bg-gray-900">
         <nav className="flex justify-between items-center max-container">
           <a href="/" className="text-3xl font-bold">
             Chic Charms
@@ -149,7 +149,7 @@ const Header = () => {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Popover.Panel className="absolute z-1 right-0 top-14 w-48 bg-slate-100 rounded-lg shadow-lg">
+                <Popover.Panel className="absolute z-1 right-0 top-14 w-48 bg-white text-blue-500 rounded-lg shadow-lg">
                   <ul className="flex flex-col items-center justify-center h-full z-10">
                     {login
                       ? userType === "admin"

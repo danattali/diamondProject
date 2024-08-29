@@ -18,6 +18,7 @@ export const fetchUserDetails = createAsyncThunk<
   void,
   { rejectValue: string }
 >("auth/fetchUserDetails", async (_, { rejectWithValue }) => {
+  debugger;
   try {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -26,7 +27,7 @@ export const fetchUserDetails = createAsyncThunk<
     console.log("Token before request:", token);
 
     // Make the request with Axios
-    const response = await axios.get("/auth/user", {
+    const response = await axios.get("http://localhost:4000/auth/user", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
