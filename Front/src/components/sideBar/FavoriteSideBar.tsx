@@ -18,7 +18,7 @@ const FavoriteSideBar: React.FC<SideBarProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const favouriteFromCookie = Cookies.get("favourite");
-  console.log(favouriteFromCookie);
+  
 
   const handleNavigateToProduct = (productId: string) => {
     navigate(`/product/${productId}`);
