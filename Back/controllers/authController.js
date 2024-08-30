@@ -5,59 +5,34 @@ const User = require("../models/user");
 const crypto = require("crypto");
 require("dotenv").config();
 
-function authentificationToken(req, res, next) {
+const authentificationToken = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
   if (!token) return res.status(401).json({ message: "Access Denied" });
 
   try {
     const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-    req.user = verified; // Assuming verified contains user info
+    console.log("Token verified successfully:", verified);
+    req.user = verified;
     next();
   } catch (err) {
-    res.status(400).json({ message: "Invalid Token" });
-  }
-}
-const rules = {
-  user: {
-    can: ["read"],
-  },
-  admin: {
-    can: ["read", "write"],
-  },
-};
-
-const register = async (req, res) => {
-  try {
-    const { fullName, userEmail, password, telephone, address } = req.body;
-    console.log(req.body);
-    const user = await User.findOne({ userEmail });
-    console.log(user);
-    if (user) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-    const hashedPassword = await bcrypt.hash(password, 12);
-    console.log(hashedPassword);
-    const newUser = new User({
-      fullName,
-      userEmail,
-      password: hashedPassword,
-      telephone,
-      address,
-      rules: { user: { can: ["read"] } },
-    });
-    await newUser.save();
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Token verification failed:", err);
+    return res.status(401).json({ message: "Invalid Token" });
   }
 };
 
 const getUserByToken = async (req, res) => {
-  console.log(req.user);
-  console.log("userId");
-  const userId = req.user._id; // Assuming req.user._id is the user ID extracted from the token
+  console.log("Request user:", req.user);
 
-  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const userId = req.user._id;
+  console.log("Extracted user ID:", userId);
+
+  // Check if the ID is a valid MongoDB ObjectId
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    console.error("Invalid user ID format:", userId);
     return res.status(400).json({ message: "Invalid ID format" });
   }
 
@@ -70,6 +45,40 @@ const getUserByToken = async (req, res) => {
   } catch (err) {
     console.error("Error in getUserByToken:", err);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const register = async (req, res) => {
+  try {
+    const { fullName, userEmail, password, telephone, address } = req.body;
+
+    const user = await User.findOne({ userEmail });
+    console.log("Existing user:", user);
+    if (user) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    console.log("Hashed password:", hashedPassword);
+
+    const newUser = new User({
+      fullName,
+      userEmail,
+      password: hashedPassword,
+      telephone,
+      address,
+      rules: { user: { can: ["read"] } }, // Simplified rules assignment
+    });
+
+    await newUser.save();
+    console.log("New user saved:", newUser);
+
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (err) {
+    console.error("Registration error:", err);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 
@@ -86,14 +95,16 @@ const login = async (req, res) => {
     if (!validPassword) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
-
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
-      expiresIn: "4h", // Adjust token expiration as necessary
+      expiresIn: "4h", // זמן תוקף של ה-Token
     });
-
-    res.status(200).json({ message: "Login successful", token });
+    console.log("Token:", token);
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: { id: user._id, fullName: user.fullName, email: user.userEmail },
+    });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -110,8 +121,7 @@ const allUsers = async (req, res) => {
 
 const userById = async (req, res) => {
   const { id } = req.params;
-
-  // Validate if id is a valid ObjectId
+  console.log("User ID:", req.params);
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid ID format" });
   }
@@ -123,7 +133,6 @@ const userById = async (req, res) => {
     }
     res.status(200).json({ user });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };

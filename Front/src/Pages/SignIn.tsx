@@ -1,13 +1,12 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import axios from "../utils/axiosConfig";
-import { fetchUserDetails, login } from "../redux/authSlice";
-import { AppDispatch } from "../redux/store"; // Make sure the path is correct
+import { useDispatch, useSelector } from "react-redux";
+import { login, clearError } from "../redux/authSlice";
+import { RootState, AppDispatch } from "../redux/store";
 
 type Inputs = {
-  email: string;
+  userEmail: string;
   password: string;
 };
 
@@ -19,43 +18,25 @@ const SignIn = () => {
   } = useForm<Inputs>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { error, isLoading } = useSelector((state: RootState) => state.auth);
 
-  const handleSignIn: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const response = await axios.post("/auth/login", {
-        userEmail: data.email,
-        password: data.password,
-      });
-
-      const userData = response.data;
-      if (userData.token) {
-        console.log("Token found:", userData.token);
-
-        localStorage.setItem("token", userData.token);
-        dispatch(login(userData.user)); // Dispatch the login action with user data
-        // Fetch additional user details if necessary
-        await dispatch(fetchUserDetails());
-        navigate("/"); // Navigate to the dashboard after login
-      } else {
-        console.log("No token found");
-      }
-      // Dispatch the login action with user data
-    } catch (error) {
+      const result = await dispatch(login(data)).unwrap();
+      console.log("Login successful:", result);
+    
+      navigate("/");
+    } catch (error: any) {
       console.error("Login failed:", error);
-      // Handle error appropriately (e.g., show a message to the user)
     }
   };
 
   return (
-    <div
-      className="max-w-md mx-auto mt-10"
-      style={{
-        minHeight: "63vh",
-      }}
-    >
+    <div className="max-w-md mx-auto mt-10" style={{ minHeight: "63vh" }}>
       <h2 className="text-3xl font-bold text-center mb-10 pt-20">Log In</h2>
+      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
       <form
-        onSubmit={handleSubmit(handleSignIn)}
+        onSubmit={handleSubmit(onSubmit)}
         className="bg-white shadow-md rounded px-8 pt-4 pb-8 mb-4"
       >
         <div className="mb-4">
@@ -64,12 +45,11 @@ const SignIn = () => {
           </label>
           <input
             type="email"
-            {...register("email", { required: true })}
-            placeholder="mail"
+            {...register("userEmail", { required: "Email is required" })}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          {errors.email && (
-            <span className="text-red-500">This field is required</span>
+          {errors.userEmail && (
+            <span className="text-red-500">{errors.userEmail.message}</span>
           )}
         </div>
         <div className="mb-4">
@@ -78,19 +58,20 @@ const SignIn = () => {
           </label>
           <input
             type="password"
-            {...register("password", { required: true })}
+            {...register("password", { required: "Password is required" })}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
           {errors.password && (
-            <span className="text-red-500">This field is required</span>
+            <span className="text-red-500">{errors.password.message}</span>
           )}
         </div>
         <div className="flex items-center justify-center">
           <button
             type="submit"
+            disabled={isLoading}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
-            Log In
+            {isLoading ? "Logging in..." : "Log In"}
           </button>
         </div>
       </form>

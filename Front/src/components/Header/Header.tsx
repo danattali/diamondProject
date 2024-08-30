@@ -11,6 +11,7 @@ import FavoriteSideBar from "../sideBar/FavoriteSideBar";
 import { clearCart } from "../../redux/cartSlice";
 import { MdFavorite } from "react-icons/md";
 import { setSearch } from "../../redux/cartSlice";
+import Cookies from "js-cookie";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -50,6 +51,13 @@ const Header = () => {
     localStorage.removeItem("userName");
     localStorage.removeItem("_id");
     localStorage.removeItem("state");
+    Cookies.remove("userId");
+    Cookies.remove("cart");
+    Cookies.remove("favourite");
+    Cookies.remove("user");
+    Cookies.remove("token");
+    
+    
     dispatch(clearCart());
     setLogin("");
     alert("Logged out successfully");
@@ -149,7 +157,7 @@ const Header = () => {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Popover.Panel className="absolute z-1 right-0 top-14 w-48 bg-white text-blue-500 rounded-lg shadow-lg">
+                <Popover.Panel className="absolute right-0 top-14 w-48 bg-white text-blue-500 rounded-lg shadow-lg">
                   <ul className="flex flex-col items-center justify-center h-full z-10">
                     {login
                       ? userType === "admin"

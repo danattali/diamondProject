@@ -1,4 +1,12 @@
 import React from "react";
+import {
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaFacebookF,
+  FaInstagram,
+  FaTwitter,
+} from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -35,13 +43,14 @@ const Footer = () => {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Contact Us</h2>
           <p className="text-gray-400">
-            <i className="fas fa-envelope"></i> danattali242@gmail.com
+            <FaEnvelope className="inline-block mr-2" /> danattali242@gmail.com
           </p>
           <p className="text-gray-400">
-            <i className="fas fa-phone"></i> +972-058-689-1012
+            <FaPhone className="inline-block mr-2" /> +972-058-689-1012
           </p>
           <p className="text-gray-400">
-            <i className="fas fa-map-marker-alt"></i> קדושי השואה 20, תל אביב
+            <FaMapMarkerAlt className="inline-block mr-2" /> קדושי השואה 20, תל
+            אביב
           </p>
         </div>
       </div>
@@ -51,13 +60,13 @@ const Footer = () => {
         </p>
         <div className="flex justify-center space-x-6 mt-4">
           <a href="https://www.facebook.com" className="hover:text-gray-300">
-            <i className="fab fa-facebook-f"></i>
+            <FaFacebookF />
           </a>
           <a href="https://www.instagram.com" className="hover:text-gray-300">
-            <i className="fab fa-instagram"></i>
+            <FaInstagram />
           </a>
           <a href="https://www.twitter.com" className="hover:text-gray-300">
-            <i className="fab fa-twitter"></i>
+            <FaTwitter />
           </a>
         </div>
       </div>

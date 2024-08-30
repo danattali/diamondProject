@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { get, set } from "react-hook-form";
+import Cookies from "js-cookie";
 
 interface User {
   _id: string;
@@ -36,7 +37,7 @@ const PurchaseHistory = () => {
   const [orders, setOrders] = React.useState<Order[]>([]);
   const [orderNumber, setOrderNumber] = React.useState("");
   const [userId, setUserId] = React.useState("");
-  const getUserId = localStorage.getItem("_id");
+  const getUserId = Cookies.get("userId");
   React.useEffect(() => {
     if (getUserId) setUserId(getUserId);
   }, [getUserId]);

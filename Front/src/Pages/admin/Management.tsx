@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const Management: React.FC = () => {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const localEmail = localStorage.getItem("userEmail");
-  const localName = localStorage.getItem("userName");
+  const localEmail = Cookies.get("userEmail");
+  const localName = Cookies.get("fullName");
   useEffect(() => {
     if (localEmail) {
       setEmail(localEmail);
