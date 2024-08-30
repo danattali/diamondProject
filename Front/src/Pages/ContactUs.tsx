@@ -25,7 +25,6 @@ const ContactUs = () => {
       )
       .then(
         (result: any) => {
-          console.log(result.text);
           alert("Email Sent Successfully");
         },
         (error: any) => {

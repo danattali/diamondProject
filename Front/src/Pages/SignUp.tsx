@@ -30,7 +30,6 @@ const SignUp = () => {
         "http://localhost:4000/auth/register",
         data
       );
-      console.log(response);
       setLoading(false);
       navigate("/");
     } catch (error) {

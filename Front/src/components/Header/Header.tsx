@@ -33,7 +33,6 @@ const Header = () => {
   };
   const handdleSearch = (e: any) => {
     e.preventDefault();
-    console.log(e.target.value);
     dispatch(setSearch(e.target.value));
   };
   const [isFavoriteSideBarOpen, setIsFavoriteSideBarOpen] = useState(false);
@@ -56,8 +55,7 @@ const Header = () => {
     Cookies.remove("favourite");
     Cookies.remove("user");
     Cookies.remove("token");
-    
-    
+
     dispatch(clearCart());
     setLogin("");
     alert("Logged out successfully");
@@ -157,7 +155,12 @@ const Header = () => {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Popover.Panel className="absolute right-0 top-14 w-48 bg-white text-blue-500 rounded-lg shadow-lg">
+                <Popover.Panel
+                  className="absolute right-0 top-14 w-48 bg-white text-blue-500 rounded-lg shadow-lg"
+                  style={{
+                    zIndex: 1000,
+                  }}
+                >
                   <ul className="flex flex-col items-center justify-center h-full z-10">
                     {login
                       ? userType === "admin"

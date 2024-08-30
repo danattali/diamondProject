@@ -35,7 +35,6 @@ const Product = () => {
     axios
       .get("http://localhost:4000/products")
       .then((response) => {
-        console.log(response.data);
 
         setProducts(response.data.products);
       })

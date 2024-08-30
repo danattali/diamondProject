@@ -5,10 +5,11 @@ const Home: React.FC = () => {
     <div>
       {/* Hero Section */}
       <div
-        className=" z-0 relative bg-cover bg-center h-screen"
+        className="relative bg-cover bg-center h-screen"
         style={{
           backgroundImage:
             "url(https://www.shutterstock.com/image-illustration/shiny-diamonds-falling-on-blackwhite-600nw-1406709977.jpg)",
+          zIndex: -1,
         }}
         aria-label="jewelry showcase image"
       >

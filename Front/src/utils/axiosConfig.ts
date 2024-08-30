@@ -6,7 +6,6 @@ axios.interceptors.request.use(
   (config) => {
     const token = Cookies.get("token");
     if (token) {
-      console.log("Token being sent:", token.substring(0, 10) + "...");
       config.headers["Authorization"] = `Bearer ${token}`;
     } else {
       console.log("No token found in localStorage");
@@ -21,11 +20,6 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   (response) => {
-    console.log(
-      `Response from ${response.config.url}:`,
-      response.status,
-      response.data
-    );
     return response;
   },
   (error) => {

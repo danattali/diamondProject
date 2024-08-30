@@ -48,7 +48,6 @@ const PurchaseHistory = () => {
           const response = await axios.get(
             `http://localhost:4000/orders/orderByUserId/${userId}`
           );
-          console.log(response.data.orders);
 
           setOrders(response.data.orders);
         } catch (error) {

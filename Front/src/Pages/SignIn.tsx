@@ -23,7 +23,6 @@ const SignIn = () => {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       const result = await dispatch(login(data)).unwrap();
-      console.log("Login successful:", result);
     
       navigate("/");
     } catch (error: any) {
