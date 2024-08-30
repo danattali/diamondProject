@@ -20,9 +20,7 @@ const loadState = (): CartState => {
 const calculateTotalPrice = (items: CartItem[]) => {
   return items.reduce((total, item) => total + item.price * item.quantity, 0);
 };
-const saveState = (state: CartState) => {
-  Cookies.set("cart", JSON.stringify(state));
-};
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: loadState(),

@@ -9,6 +9,7 @@ import Management from "./Pages/admin/Management";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import "../src/utils/axiosConfig";
+import React from 'react'; // Add this line
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AdminProduct from "./Pages/admin/AdminProduct";
