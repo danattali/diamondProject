@@ -109,7 +109,12 @@ const login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      user: { id: user._id, fullName: user.fullName, email: user.userEmail },
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.userEmail,
+        rules: user.rules,
+      },
     });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
@@ -143,6 +148,27 @@ const userById = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+const changeRules = async (req, res) => {
+  const { id } = req.params;
+  const { rules } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid ID format" });
+  }
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.rules = rules;
+    await user.save();
+    res.status(200).json({ message: "User rules updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -150,4 +176,5 @@ module.exports = {
   allUsers,
   userById,
   getUserByToken,
+  changeRules,
 };

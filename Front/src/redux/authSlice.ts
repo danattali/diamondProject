@@ -33,12 +33,15 @@ export const login = createAsyncThunk<
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
     const response = await axios.post("/auth/login", credentials);
+    console.log(response.data);
+
     const { user, token } = response.data;
     Cookies.set("token", token);
     Cookies.set("user", JSON.stringify(user));
     Cookies.set("userId", user.id);
     Cookies.set("userEmail", user.email);
     Cookies.set("fullName", user.fullName);
+    Cookies.set("rules", user.rules);
     localStorage.setItem("login", "false");
     return { user, token };
   } catch (error: any) {

@@ -40,7 +40,7 @@ const Header = () => {
     setIsFavoriteSideBarOpen(!isFavoriteSideBarOpen);
   };
 
-  const typeUser = localStorage.getItem("userType");
+  const typeUser = Cookies.get("rules");
   const ifLoggedIn = localStorage.getItem("login");
 
   const logout = () => {
