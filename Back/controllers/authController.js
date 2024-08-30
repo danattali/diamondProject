@@ -3,6 +3,13 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const User = require("../models/user");
 const crypto = require("crypto");
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again tomorrow",
+});
+
 require("dotenv").config();
 
 const authentificationToken = (req, res, next) => {
@@ -96,7 +103,7 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
-      expiresIn: "4h", // זמן תוקף של ה-Token
+      expiresIn: "4h", // Token expires in 4 hours
     });
     console.log("Token:", token);
     res.status(200).json({
