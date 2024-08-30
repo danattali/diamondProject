@@ -7,8 +7,8 @@ const userSchema = new mongoose.Schema({
   telephone: String,
   address: String,
   rules: {
-    type: Object,
-    default: { can: ["read"] },
+    name: { type: String, enum: ["admin", "user"], default: "user" },
+    can: { type: [String], default: ["read"] },
   },
 });
 

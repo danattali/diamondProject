@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { set } from "react-hook-form";
 
 interface User {
   _id: string;
@@ -7,21 +8,51 @@ interface User {
   userEmail: string;
   telephone: string;
   address: string;
+  rules: string;
 }
 
 const AllUsers = () => {
   const [users, setUsers] = React.useState<User[]>([]);
+  const [rules, setRules] = React.useState<string>("");
+  const handleAllUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/auth");
+      console.log(response.data);
+      setUsers(response.data.users);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   React.useEffect(() => {
-    axios
-      .get("http://localhost:4000/auth")
-      .then((response) => {
-        console.log(response.data);
-        setUsers(response.data.users);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    handleAllUsers();
   }, []);
+
+  const handleChangeRules = async (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    userId: string
+  ) => {
+    const updatedRules = {
+      name: e.target.value,
+      can: e.target.value === "admin" ? ["read", "write", "delete"] : ["read"],
+    };
+
+    console.log("Payload being sent:", { rules: updatedRules }); // Logging the payload
+
+    try {
+      await axios.put(`http://localhost:4000/auth/${userId}/rules`, {
+        rules: updatedRules,
+      });
+      setUsers((prev) =>
+        prev.map((user) =>
+          user._id === userId ? { ...user, rules: e.target.value } : user
+        )
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <div className="relative overflow-x-auto min-h-screen">
@@ -44,6 +75,9 @@ const AllUsers = () => {
               <th scope="col" className="px-6 py-3">
                 address
               </th>
+              <th scope="col" className="px-6 py-3">
+                Rules
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -63,6 +97,18 @@ const AllUsers = () => {
                 <td className="px-6 py-4">{users.userEmail}</td>
                 <td className="px-6 py-4">{users.telephone}</td>
                 <td className="px-6 py-4">{users.address}</td>
+                <td className="px-6 py-4">
+                  {" "}
+                  <select
+                    id="countries"
+                    value={users.rules.name}
+                    onChange={(e) => handleChangeRules(e, users._id)}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  >
+                    <option value="admin">admin</option>
+                    <option value="user">user</option>
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>

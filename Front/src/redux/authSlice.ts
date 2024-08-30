@@ -7,6 +7,7 @@ interface User {
   _id: string;
   fullName: string;
   userEmail: string;
+  rules: string;
   // Add other user properties as needed
 }
 
@@ -41,7 +42,7 @@ export const login = createAsyncThunk<
     Cookies.set("userId", user.id);
     Cookies.set("userEmail", user.email);
     Cookies.set("fullName", user.fullName);
-    Cookies.set("rules", user.rules);
+    Cookies.set("rules", user.rules.name);
     localStorage.setItem("login", "false");
     return { user, token };
   } catch (error: any) {

@@ -26,12 +26,12 @@ const SignUp = () => {
     try {
       setError("");
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:4000/auth/register",
-        data
-      );
+      const response = await axios.post("http://localhost:4000/auth/register", {
+        ...data,
+        rules: "user",
+      });
       setLoading(false);
-      navigate("/");
+      navigate("/SignIn");
     } catch (error) {
       setError("Failed to create an account");
       setLoading(false);

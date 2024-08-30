@@ -57,7 +57,9 @@ const getUserByToken = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    const { fullName, userEmail, password, telephone, address } = req.body;
+    console.log("Request body:", req.body);
+    const { fullName, userEmail, password, telephone, address, rules } =
+      req.body;
 
     const user = await User.findOne({ userEmail });
     console.log("Existing user:", user);
@@ -74,7 +76,10 @@ const register = async (req, res) => {
       password: hashedPassword,
       telephone,
       address,
-      rules: { user: { can: ["read"] } }, // Simplified rules assignment
+      rules: {
+        name: rules.name || "user",
+        can: rules.can || ["read"],
+      }, // Simplified rules assignment
     });
 
     await newUser.save();
@@ -161,13 +166,22 @@ const changeRules = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    user.rules = rules;
+
+    // Assuming `rules` is an object, you might need to validate its structure
+    if (typeof rules !== "object" || !rules.name || !Array.isArray(rules.can)) {
+      return res.status(400).json({ message: "Invalid rules format" });
+    }
+
+    user.rules = rules; // Update the rules field
     await user.save();
+
     res.status(200).json({ message: "User rules updated successfully" });
   } catch (err) {
+    console.error("Error updating user rules:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 module.exports = {
   register,
