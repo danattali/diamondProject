@@ -1,21 +1,16 @@
 import React, { FormEvent } from "react";
 import emailjs from "@emailjs/browser";
-import { contactUsType } from "../components/@types/types.d";
+
 const ContactUs = () => {
   const [name, setName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
   const [phone, setPhone] = React.useState<string>("");
   const [orderNumber, setOrderNumber] = React.useState<string>("");
   const [message, setMessage] = React.useState("");
+
   const sendEmail = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const templateParams: contactUsType = {
-      name,
-      email,
-      phone,
-      orderNumber,
-      message,
-    };
+
     emailjs
       .sendForm(
         "service_o3fc346",
@@ -24,13 +19,14 @@ const ContactUs = () => {
         "YtbhJeVP4hc2LuR89"
       )
       .then(
-        (result: any) => {
+        () => {
           alert("Email Sent Successfully");
         },
-        (error: any) => {
+        (error: { text: string }) => {
           console.log(error.text);
         }
       );
+
     setName("");
     setEmail("");
     setPhone("");
@@ -63,6 +59,7 @@ const ContactUs = () => {
             name="name"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             onChange={(e) => setName(e.target.value)}
+            value={name}
           />
         </div>
         <div className="mb-4">
@@ -74,9 +71,8 @@ const ContactUs = () => {
             placeholder="Email"
             name="email"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
           />
         </div>
         <div className="mb-4">
@@ -88,9 +84,8 @@ const ContactUs = () => {
             placeholder="Phone"
             name="phone"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            onChange={(e) => {
-              setPhone(e.target.value);
-            }}
+            onChange={(e) => setPhone(e.target.value)}
+            value={phone}
           />
         </div>
         <div className="mb-4">
@@ -102,9 +97,8 @@ const ContactUs = () => {
             placeholder="Order Number"
             name="orderNumber"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            onChange={(e) => {
-              setOrderNumber(e.target.value);
-            }}
+            onChange={(e) => setOrderNumber(e.target.value)}
+            value={orderNumber}
           />
         </div>
 
@@ -117,6 +111,7 @@ const ContactUs = () => {
             name="message"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             onChange={(e) => setMessage(e.target.value)}
+            value={message}
           />
         </div>
         <div className="flex items-center justify-center">

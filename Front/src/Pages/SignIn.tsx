@@ -2,7 +2,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, clearError } from "../redux/authSlice";
+import { login } from "../redux/authSlice";
 import { RootState, AppDispatch } from "../redux/store";
 
 type Inputs = {
@@ -22,11 +22,10 @@ const SignIn = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const result = await dispatch(login(data)).unwrap();
-    
+      await dispatch(login(data)).unwrap();
       navigate("/");
-    } catch (error: any) {
-      console.error("Login failed:", error);
+    } catch (err) {
+      console.error("Login failed:", err);
     }
   };
 

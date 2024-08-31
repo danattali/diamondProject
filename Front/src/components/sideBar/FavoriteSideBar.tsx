@@ -1,31 +1,40 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { FaTrashAlt } from "react-icons/fa";
-import { removeFavourite } from "../../redux/favouriteSlice";
-import { useDispatch } from "react-redux";
+import { removeFavourite, setFavourites } from "../../redux/favouriteSlice";
+
 interface SideBarProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 const FavoriteSideBar: React.FC<SideBarProps> = ({ isOpen, onClose }) => {
-  const favoriteItems = useSelector(
-    (state: RootState) => state.favourite.items
-  ); // Assuming you have a 'favorites' slice in your Redux state
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const favouriteFromCookie = Cookies.get("favourite");
-  
+  const favoriteItems = useSelector(
+    (state: RootState) => state.favourite.items
+  );
+
+  useEffect(() => {
+    const favouriteFromCookie = Cookies.get("favourite");
+    if (favouriteFromCookie) {
+      // Assuming the cookie value is a JSON string
+      const favourites = JSON.parse(favouriteFromCookie);
+      dispatch(setFavourites(favourites));
+    }
+  }, [dispatch]);
 
   const handleNavigateToProduct = (productId: string) => {
     navigate(`/product/${productId}`);
   };
+
   const handleRemoveFavourite = (productId: string) => {
     dispatch(removeFavourite(productId));
   };
+
   return (
     <div
       className={`fixed top-0 z-10 right-0 w-64 bg-white h-full shadow-lg transform ${

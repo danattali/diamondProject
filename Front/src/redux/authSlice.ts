@@ -1,9 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../utils/axiosConfig";
 import Cookies from "js-cookie";
 
+// Define the error response type
+interface ErrorResponse {
+  message: string;
+}
+
 interface User {
-  id(arg0: string, id: any): unknown;
   _id: string;
   fullName: string;
   userEmail: string;
@@ -39,14 +43,20 @@ export const login = createAsyncThunk<
     const { user, token } = response.data;
     Cookies.set("token", token);
     Cookies.set("user", JSON.stringify(user));
-    Cookies.set("userId", user.id);
-    Cookies.set("userEmail", user.email);
+    Cookies.set("userId", user._id);
+    Cookies.set("userEmail", user.userEmail);
     Cookies.set("fullName", user.fullName);
-    Cookies.set("rules", user.rules.name);
-    localStorage.setItem("login", "false");
+    Cookies.set("rules", user.rules);
+    localStorage.setItem("login", "true");
     return { user, token };
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Login failed");
+  } catch (error) {
+    // Check if error is an AxiosError and use its response data
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage =
+        (error.response.data as ErrorResponse).message || "Login failed";
+      return rejectWithValue(errorMessage);
+    }
+    return rejectWithValue("Login failed");
   }
 });
 
@@ -58,10 +68,15 @@ export const fetchUserDetails = createAsyncThunk<
   try {
     const response = await axios.get("/auth/user");
     return response.data;
-  } catch (error: any) {
-    return rejectWithValue(
-      error.response?.data?.message || "Failed to fetch user details"
-    );
+  } catch (error) {
+    // Check if error is an AxiosError and use its response data
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage =
+        (error.response.data as ErrorResponse).message ||
+        "Failed to fetch user details";
+      return rejectWithValue(errorMessage);
+    }
+    return rejectWithValue("Failed to fetch user details");
   }
 });
 

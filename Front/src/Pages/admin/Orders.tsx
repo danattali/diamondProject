@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { set } from "react-hook-form";
 
 interface User {
   _id: string;
@@ -34,7 +33,6 @@ interface Order {
 
 const AllOrder = () => {
   const [orders, setOrders] = React.useState<Order[]>([]);
-  const [orderNumber, setOrderNumber] = React.useState("");
 
   React.useEffect(() => {
     const fetchAllOrders = async () => {
@@ -45,13 +43,10 @@ const AllOrder = () => {
         const ordersWithUsers = await Promise.all(
           response.data.orders.map(async (order: Order) => {
             const userResponse = await axios.get(
-              `http://localhost:4000/auth/${order.user}`
+              `http://localhost:4000/auth/${order.user._id}` // Assuming order.user is the user's _id
             );
-            setOrderNumber(response.data.orders.length);
             return {
               ...order,
-              
-
               user: userResponse.data.user,
               orderItems: order.orderItems.map((item) => item.name),
             };
@@ -82,7 +77,7 @@ const AllOrder = () => {
                 Full Name
               </th>
               <th scope="col" className="px-6 py-3">
-                Order items
+                Order Items
               </th>
               <th scope="col" className="px-6 py-3">
                 Shipping Address
@@ -100,13 +95,13 @@ const AllOrder = () => {
                   index % 2 === 0 ? "bg-white" : "bg-gray-50"
                 } border-b dark:bg-gray-800 dark:border-gray-700`}
               >
-                <td className="px-6 py-4">{index+1}</td>
+                <td className="px-6 py-4">{index + 1}</td>
                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   {order.user.fullName}
                 </td>
                 <td className="px-6 py-4">{order.orderItems.join(", ")}</td>
                 <td className="px-6 py-4">
-                  {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
+                  {order.shippingAddress.address}, {order.shippingAddress.city}
                 </td>
                 <td className="px-6 py-4">
                   {new Date(order.createdAt).toLocaleDateString()}

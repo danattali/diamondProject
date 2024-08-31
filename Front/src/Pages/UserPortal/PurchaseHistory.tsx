@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { get, set } from "react-hook-form";
 import Cookies from "js-cookie";
 
 interface User {
@@ -35,12 +34,15 @@ interface Order {
 
 const PurchaseHistory = () => {
   const [orders, setOrders] = React.useState<Order[]>([]);
-  const [orderNumber, setOrderNumber] = React.useState("");
   const [userId, setUserId] = React.useState("");
-  const getUserId = Cookies.get("userId");
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
   React.useEffect(() => {
+    const getUserId = Cookies.get("userId");
     if (getUserId) setUserId(getUserId);
-  }, [getUserId]);
+  }, []);
+
   React.useEffect(() => {
     const fetchOrderById = async () => {
       if (userId) {
@@ -48,25 +50,44 @@ const PurchaseHistory = () => {
           const response = await axios.get(
             `http://localhost:4000/orders/orderByUserId/${userId}`
           );
-
           setOrders(response.data.orders);
-        } catch (error) {
-          console.log(error);
+        } catch (err) {
+          console.error(err); // Log the error to the console
+          setError("Failed to fetch orders. Please try again later.");
+        } finally {
+          setLoading(false);
         }
       }
     };
 
     fetchOrderById();
   }, [userId]);
+
   const formatDate = (date: string) => {
     const [year, month, day] = date.split("-");
     return `${day}/${month}/${year}`;
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading orders...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="relative overflow-x-auto min-h-screen">
       <div className="container mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white pt-20 ">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white pt-20">
           Purchase History
         </h1>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -75,7 +96,6 @@ const PurchaseHistory = () => {
               <th scope="col" className="px-6 py-3">
                 Order Number
               </th>
-
               <th scope="col" className="px-6 py-3">
                 Order items
               </th>
@@ -95,8 +115,7 @@ const PurchaseHistory = () => {
                   index % 2 === 0 ? "bg-white" : "bg-gray-50"
                 } border-b dark:bg-gray-800 dark:border-gray-700`}
               >
-                <td className="px-6 py-4">{index + 1}</td>
-
+                <td className="px-6 py-4">{order.orderNumber || index + 1}</td>
                 <td className="px-6 py-4">
                   {order.orderItems.map((item, index) => (
                     <div key={index} className="flex items-center">
@@ -105,15 +124,17 @@ const PurchaseHistory = () => {
                         alt={item.name}
                         className="w-12 h-12 object-cover"
                       />
-                      <span className="mx-2 font-semibold">{item.name}</span>
-                      <span className="mx-2 font-semibold">
-                        {item.quantity} x {item.price}$
-                      </span>
+                      <div className="ml-2">
+                        <span className="block font-semibold">{item.name}</span>
+                        <span className="block">
+                          {item.quantity} x {item.price}$
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </td>
                 <td className="px-6 py-4">
-                  {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
+                  {order.shippingAddress.address}, {order.shippingAddress.city}
                 </td>
                 <td className="px-6 py-4">
                   {formatDate(order.createdAt.split("T")[0])}

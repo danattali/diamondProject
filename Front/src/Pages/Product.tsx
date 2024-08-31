@@ -8,21 +8,12 @@ import axios from "axios";
 import { MdFavorite } from "react-icons/md";
 import { addFavourite } from "../redux/favouriteSlice";
 
-// Import images
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  category: string;
-}
 const Product = () => {
-  const [selectedCategory, setSelectedCategory] = React.useState({
-    value: "all",
-    label: "All Categories",
-  });
-
+  const [selectedCategory, setSelectedCategory] =
+    React.useState<categoryOption>({
+      value: "all",
+      label: "All Categories",
+    });
 
   const [selectProduct, setSelectProduct] = React.useState<ProductType | null>(
     null
@@ -35,7 +26,6 @@ const Product = () => {
     axios
       .get("http://localhost:4000/products")
       .then((response) => {
-
         setProducts(response.data.products);
       })
       .catch((error) => {
@@ -45,9 +35,9 @@ const Product = () => {
 
   const categories: categoryOption[] = [
     { value: "all", label: "All Categories" },
-    ...Array.from(new Set(products?.map((product) => product.category)))?.map(
-      (category) => ({ value: category, label: category })
-    ),
+    ...Array.from(
+      new Set((products || []).map((product) => product.category))
+    ).map((category) => ({ value: category, label: category })),
   ];
 
   const handleCategoryChange = (category: categoryOption | null) => {
@@ -74,14 +64,10 @@ const Product = () => {
     setIsModalOpen(false);
     setSelectProduct(null);
   };
-  const handleAddToFavourite = (product: Product) => {
 
-  
- dispatch(addFavourite(product));
-    
+  const handleAddToFavourite = (product: ProductType) => {
+    dispatch(addFavourite(product));
   };
-
-  
 
   return (
     <div className="container mx-auto px-4 py-8">

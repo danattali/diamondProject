@@ -1,38 +1,40 @@
-//צרו קונטקסט חדש בשם AuthContext
-//משתנה בשם isLoggedIn = false
-//function login(JWT:string)=void
-//function logout()=void
+import React, { createContext, useState, ReactNode } from "react";
 
-import { createContext, useState } from "react";
-import { FCC } from "../@types/types";
+// Define types for context value
+type AuthContextType = {
+  isLoggedIn: boolean;
+  login: (JWT: string) => void;
+  logout: () => void;
+};
 
-// מבנה של הקונטקסט: משתנים ופונקציות
-export const ThemeContext = createContext({
-    theme: "light",
-    toggle: () => { },
+// Create context with default values
+export const AuthContext = createContext<AuthContextType>({
+  isLoggedIn: false,
+  login: () => {},
+  logout: () => {},
 });
 
-export const ThemeProvider: FCC = (props) => {
-    // state variable:
-    const [theme, setTheme] = useState("light");
+// Create the provider component
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-    // function toggle
-    function toggle() {
-        //const newTheme = "light" | "dark"
-        const newTheme = theme == "dark" ? "light" : "dark";
+  const login = (JWT: string) => {
+    // Handle login logic, e.g., store JWT and set logged in state
+    localStorage.setItem("authToken", JWT); // Example usage
+    setIsLoggedIn(true);
+  };
 
-        if (newTheme == "dark") {
-            document.body.classList.add("dark");
-        } else {
-            document.body.classList.remove("dark");
-        }
+  const logout = () => {
+    // Handle logout logic, e.g., clear JWT and set logged out state
+    localStorage.removeItem("authToken"); // Example usage
+    setIsLoggedIn(false);
+  };
 
-        setTheme(newTheme);
-    }
-
-    return (
-        <ThemeContext.Provider value={{ theme, toggle }}>
-            {props.children}
-        </ThemeContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

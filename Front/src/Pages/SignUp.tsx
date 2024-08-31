@@ -26,14 +26,17 @@ const SignUp = () => {
     try {
       setError("");
       setLoading(true);
-      const response = await axios.post("http://localhost:4000/auth/register", {
+      await axios.post("http://localhost:4000/auth/register", {
         ...data,
         rules: "user",
       });
       setLoading(false);
       navigate("/SignIn");
-    } catch (error) {
-      setError("Failed to create an account");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Failed to create an account. Please try again."
+      );
       setLoading(false);
     }
   };
@@ -87,7 +90,13 @@ const SignUp = () => {
           </label>
           <input
             type="tel"
-            {...register("telephone", { required: "Telephone is required" })}
+            {...register("telephone", {
+              required: "Telephone is required",
+              pattern: {
+                value: /^[0-9]+$/,
+                message: "Telephone number must be numeric",
+              },
+            })}
             placeholder="Telephone"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />

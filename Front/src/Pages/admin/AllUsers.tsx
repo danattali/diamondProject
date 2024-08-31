@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { set } from "react-hook-form";
 
 interface User {
   _id: string;
@@ -13,7 +12,7 @@ interface User {
 
 const AllUsers = () => {
   const [users, setUsers] = React.useState<User[]>([]);
-  const [rules, setRules] = React.useState<string>("");
+
   const handleAllUsers = async () => {
     try {
       const response = await axios.get("http://localhost:4000/auth");
@@ -73,7 +72,7 @@ const AllUsers = () => {
                 Telephone
               </th>
               <th scope="col" className="px-6 py-3">
-                address
+                Address
               </th>
               <th scope="col" className="px-6 py-3">
                 Rules
@@ -81,9 +80,9 @@ const AllUsers = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((users, index) => (
+            {users.map((user, index) => (
               <tr
-                key={index}
+                key={user._id}
                 className={`${
                   index % 2 === 0 ? "bg-white" : "bg-gray-50"
                 } border-b dark:bg-gray-800 dark:border-gray-700`}
@@ -92,17 +91,16 @@ const AllUsers = () => {
                   scope="row"
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {users.fullName}
+                  {user.fullName}
                 </th>
-                <td className="px-6 py-4">{users.userEmail}</td>
-                <td className="px-6 py-4">{users.telephone}</td>
-                <td className="px-6 py-4">{users.address}</td>
+                <td className="px-6 py-4">{user.userEmail}</td>
+                <td className="px-6 py-4">{user.telephone}</td>
+                <td className="px-6 py-4">{user.address}</td>
                 <td className="px-6 py-4">
-                  {" "}
                   <select
-                    id="countries"
-                    value={users.rules.name}
-                    onChange={(e) => handleChangeRules(e, users._id)}
+                    id="rules"
+                    value={user.rules}
+                    onChange={(e) => handleChangeRules(e, user._id)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
                     <option value="admin">admin</option>

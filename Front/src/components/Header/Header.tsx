@@ -3,39 +3,40 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineClose } from "react-icons/ai";
 import { IoIosCart } from "react-icons/io";
 import { IoMdPerson } from "react-icons/io";
+import { MdFavorite } from "react-icons/md"; // Import MdFavorite if used
 import { Popover, Transition } from "@headlessui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import SideBar from "../sideBar/SideBar";
 import FavoriteSideBar from "../sideBar/FavoriteSideBar";
-import { clearCart } from "../../redux/cartSlice";
-import { MdFavorite } from "react-icons/md";
-import { setSearch } from "../../redux/cartSlice";
+import { clearCart, setSearch } from "../../redux/cartSlice";
 import Cookies from "js-cookie";
+import { Link } from "react-router-dom"; // Import Link for navigation
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [login, setLogin] = useState("");
-  const [userType, setUserType] = useState("");
-  const [isPersonMenuOpen, setIsPersonMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [login, setLogin] = useState<string>("");
+  const [userType, setUserType] = useState<string>("");
+  const [isPersonMenuOpen, setIsPersonMenuOpen] = useState<boolean>(false);
 
   const projectNumber = useSelector((state: RootState) =>
-    state?.cart?.items?.reduce(
-      (total: any, item: any) => total + item.quantity,
-      0
-    )
+    state?.cart?.items?.reduce((total, item) => total + item.quantity, 0)
   );
+
   const dispatch = useDispatch();
 
-  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
   const toggleSideBar = () => {
     setIsSideBarOpen(!isSideBarOpen);
   };
-  const handdleSearch = (e: any) => {
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     dispatch(setSearch(e.target.value));
   };
-  const [isFavoriteSideBarOpen, setIsFavoriteSideBarOpen] = useState(false);
+
+  const [isFavoriteSideBarOpen, setIsFavoriteSideBarOpen] =
+    useState<boolean>(false);
   const favoriteToggleSideBar = () => {
     setIsFavoriteSideBarOpen(!isFavoriteSideBarOpen);
   };
@@ -69,7 +70,7 @@ const Header = () => {
     if (typeUser) {
       setUserType(typeUser);
     }
-  }, [ifLoggedIn]);
+  }, [ifLoggedIn, typeUser]);
 
   const navLinksAdmin = [
     { href: "/admin/Management", label: "Admin" },
@@ -101,18 +102,18 @@ const Header = () => {
     <>
       <header className="sm:px-8 px-4 py-2 z-10 w-full text-white bg-gray-900">
         <nav className="flex justify-between items-center max-container">
-          <a href="/" className="text-3xl font-bold">
+          <Link to="/" className="text-3xl font-bold">
             Chic Charms
-          </a>
+          </Link>
           <ul className="flex-1 flex justify-center items-center gap-16 max-lg:hidden">
             {navLinks.map((item) => (
               <li key={item.label}>
-                <a
-                  href={item.href}
+                <Link
+                  to={item.href}
                   className="font-montserrat leading-normal text-lg text-slate-gray"
                 >
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -122,7 +123,7 @@ const Header = () => {
                 type="search"
                 className="text-xs peer cursor-pointer relative z-10 h-8 w-10 rounded-lg border bg-transparent pr-6 outline-none focus:rounded-r-none focus:w-full focus:cursor-text focus:border-taupeGray focus:px-3"
                 placeholder="search..."
-                onChange={handdleSearch}
+                onChange={handleSearch}
               />
               <button className="absolute top-0 right-0 bottom-0 my-auto h-8 w-10 px-3 bg-slate-300 rounded-lg peer-focus:relative peer-focus:rounded-l-none">
                 <svg
@@ -157,43 +158,41 @@ const Header = () => {
               >
                 <Popover.Panel
                   className="absolute right-0 top-14 w-48 bg-white text-blue-500 rounded-lg shadow-lg"
-                  style={{
-                    zIndex: 1000,
-                  }}
+                  style={{ zIndex: 1000 }}
                 >
                   <ul className="flex flex-col items-center justify-center h-full z-10">
                     {login
                       ? userType === "admin"
                         ? navLinksAdmin.map((item) => (
                             <li key={item.label}>
-                              <a
-                                href={item.href}
+                              <Link
+                                to={item.href}
                                 className="font-montserrat leading-normal text-lg text-slate-gray"
                                 onClick={item.onClick}
                               >
                                 {item.label}
-                              </a>
+                              </Link>
                             </li>
                           ))
                         : loggedUser.map((item) => (
                             <li key={item.label}>
-                              <a
-                                href={item.href}
+                              <Link
+                                to={item.href}
                                 className="font-montserrat leading-normal text-lg text-slate-gray"
                                 onClick={item.onClick}
                               >
                                 {item.label}
-                              </a>
+                              </Link>
                             </li>
                           ))
                       : userLink.map((item) => (
                           <li key={item.label}>
-                            <a
-                              href={item.href}
+                            <Link
+                              to={item.href}
                               className="font-montserrat leading-normal text-lg text-slate-gray"
                             >
                               {item.label}
-                            </a>
+                            </Link>
                           </li>
                         ))}
                   </ul>
@@ -219,9 +218,7 @@ const Header = () => {
 
           <div
             className="hidden max-lg:block cursor-pointer"
-            onClick={() => {
-              setIsMenuOpen(!isMenuOpen);
-            }}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <RxHamburgerMenu className="text-4xl" />
           </div>
@@ -232,21 +229,19 @@ const Header = () => {
           <nav className="fixed top-0 right-0 left-0 bottom-0 lg:bottom-auto bg-slate-100">
             <div
               className="hidden max-lg:block fixed right-0 px-8 py-4 cursor-pointer"
-              onClick={() => {
-                setIsMenuOpen(!isMenuOpen);
-              }}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <AiOutlineClose className="text-4xl" />
             </div>
             <ul className="lg:hidden flex flex-col items-center justify-center h-full">
               {navLinks.map((item) => (
                 <li key={item.label}>
-                  <a
-                    href={item.href}
+                  <Link
+                    to={item.href}
                     className="font-montserrat leading-normal text-lg text-slate-gray"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
