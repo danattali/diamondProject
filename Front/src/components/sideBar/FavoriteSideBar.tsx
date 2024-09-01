@@ -21,7 +21,6 @@ const FavoriteSideBar: React.FC<SideBarProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     const favouriteFromCookie = Cookies.get("favourite");
     if (favouriteFromCookie) {
-      // Assuming the cookie value is a JSON string
       const favourites = JSON.parse(favouriteFromCookie);
       dispatch(setFavourites(favourites));
     }

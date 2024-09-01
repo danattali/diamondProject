@@ -5,7 +5,16 @@ import { RootState } from "../redux/store";
 import { ProductType } from "../components/@types/types";
 import { useNavigate } from "react-router-dom";
 import { removeItem, updateQuantity } from "../redux/cartSlice";
-
+interface CartItem {
+  _id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  id?: string | number | undefined;
+  image?: string;
+  category?: string;
+  description?: string; // Make this optional
+}
 const CartPage: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
@@ -23,13 +32,13 @@ const CartPage: React.FC = () => {
     setSubtotal(calculateSubtotal());
   }, [cartItems]);
 
-  const handleIncreaseQuantity = (product: ProductType) => {
+  const handleIncreaseQuantity = (product: ProductType | CartItem) => {
     dispatch(
       updateQuantity({ _id: product._id, quantity: product.quantity + 1 })
     );
   };
 
-  const handleDecreaseQuantity = (product: ProductType) => {
+  const handleDecreaseQuantity = (product: ProductType | CartItem) => {
     if (product.quantity > 1) {
       dispatch(
         updateQuantity({
@@ -42,7 +51,7 @@ const CartPage: React.FC = () => {
     }
   };
 
-  const handleRemoveFromCart = (product: ProductType) => {
+  const handleRemoveFromCart = (product: ProductType | CartItem) => {
     dispatch(removeItem(product._id));
   };
 

@@ -6,6 +6,10 @@ interface CartItem {
   name: string;
   quantity: number;
   price: number;
+  id?: string | number;
+  image?: string;
+  category?: string;
+  description?: string ; // Make this optional
 }
 
 interface CartState {

@@ -42,6 +42,7 @@ export type ProductType = {
   description: string;
   quantity: number;
   category: string;
+  img?: string;
 };
 
 export type CategoryOption = {
@@ -52,6 +53,7 @@ export type CategoryOption = {
 export type ProductModalProps = {
   product: ProductType | null;
   isOpen: boolean;
+  img: string;
   closeModal: () => void;
 };
 

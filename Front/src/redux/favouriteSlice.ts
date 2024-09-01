@@ -11,7 +11,7 @@ interface FavouriteItem {
 }
 
 interface FavouriteState {
-  items: [];
+  items: FavouriteItem[];
 }
 
 const loadState = (): FavouriteState => {
@@ -26,6 +26,7 @@ const loadState = (): FavouriteState => {
   }
   return { items: [] };
 };
+
 const initialState: FavouriteState = loadState();
 
 const FavouriteSlice = createSlice({
@@ -49,8 +50,13 @@ const FavouriteSlice = createSlice({
       );
       saveState(state);
     },
+    setFavourites: (state, action: PayloadAction<FavouriteItem[]>) => {
+      state.items = action.payload;
+      saveState(state);
+    },
   },
 });
+
 const saveState = (state: FavouriteState) => {
   try {
     const serialisedState = JSON.stringify(state);
@@ -60,5 +66,6 @@ const saveState = (state: FavouriteState) => {
   }
 };
 
-export const { addFavourite, removeFavourite } = FavouriteSlice.actions;
+export const { addFavourite, removeFavourite, setFavourites } =
+  FavouriteSlice.actions;
 export default FavouriteSlice.reducer;

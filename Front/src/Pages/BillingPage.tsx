@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import PaymentForm from "./PayCreditCard";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import Cookies from "js-cookie";
+
 interface BillingFormState {
   firstName: string;
   lastName: string;
@@ -25,25 +26,9 @@ const BillingForm: React.FC = () => {
     zipCode: "",
   });
 
+  const [isOpen, setIsOpen] = useState(false);
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
-
-  const handleSubmitOrder = async () => {
-    const _id = Cookies.get("userId");
-    try {
-      await axios.post("http://localhost:4000/orders", {
-        userId: _id,
-        items: cartItems,
-        totalPrice: totalPrice,
-        shippingAddress: formData,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const [isOpen, setIsOpen] = useState(false);
-
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
@@ -57,7 +42,19 @@ const BillingForm: React.FC = () => {
     e.preventDefault();
     toggleModal();
   };
-
+  const handleSubmitOrder = async () => {
+    const _id = Cookies.get("userId");
+    try {
+      await axios.post("http://localhost:4000/orders", {
+        userId: _id,
+        items: cartItems,
+        totalPrice: totalPrice,
+        shippingAddress: formData,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-white shadow-md rounded-lg">
       <h2 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">
@@ -235,7 +232,7 @@ const BillingForm: React.FC = () => {
                 </button>
               </div>
               <div className="p-4">
-                <PaymentForm handleSubmitOrder={handleSubmitOrder} />
+                <PaymentForm formData={formData} />
               </div>
               <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                 <button

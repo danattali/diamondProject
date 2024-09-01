@@ -1,19 +1,23 @@
 import React from "react";
 import Select from "react-tailwindcss-select";
 import { useDispatch } from "react-redux";
-import { ProductType, categoryOption } from "../components/@types/types";
+import { ProductType } from "../components/@types/types";
 import ProductModal from "../components/Modal/ProductModal";
 import { addItem } from "../redux/cartSlice";
 import axios from "axios";
 import { MdFavorite } from "react-icons/md";
 import { addFavourite } from "../redux/favouriteSlice";
 
-const Product = () => {
-  const [selectedCategory, setSelectedCategory] =
-    React.useState<categoryOption>({
+// Import the Option type from react-tailwindcss-select
+import { Option } from "react-tailwindcss-select/dist/components/type";
+
+const Product: React.FC = () => {
+  const [selectedCategory, setSelectedCategory] = React.useState<Option | null>(
+    {
       value: "all",
       label: "All Categories",
-    });
+    }
+  );
 
   const [selectProduct, setSelectProduct] = React.useState<ProductType | null>(
     null
@@ -33,38 +37,45 @@ const Product = () => {
       });
   }, []);
 
-  const categories: categoryOption[] = [
+  // Convert products to categories for Select options
+  const categories: Option[] = [
     { value: "all", label: "All Categories" },
     ...Array.from(
       new Set((products || []).map((product) => product.category))
     ).map((category) => ({ value: category, label: category })),
   ];
 
-  const handleCategoryChange = (category: categoryOption | null) => {
-    if (category) setSelectedCategory(category);
+  // Handle category change
+  const handleCategoryChange = (value: Option | null) => {
+    setSelectedCategory(value);
   };
 
+  // Filter products based on selected category
   const filteredProducts =
-    selectedCategory.value === "all"
+    selectedCategory?.value === "all"
       ? products
       : products.filter(
-          (product) => product.category === selectedCategory.value
+          (product) => product.category === selectedCategory?.value
         );
 
+  // Open product modal
   const openModal = (product: ProductType) => {
     setSelectProduct(product);
     setIsModalOpen(true);
   };
 
+  // Add product to cart
   const handleAddToCart = (product: ProductType) => {
     dispatch(addItem(product));
   };
 
+  // Close product modal
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectProduct(null);
   };
 
+  // Add product to favourites
   const handleAddToFavourite = (product: ProductType) => {
     dispatch(addFavourite(product));
   };
@@ -89,6 +100,7 @@ const Product = () => {
             options={categories}
             onChange={handleCategoryChange}
             value={selectedCategory}
+            isClearable
           />
         </div>
       </div>
