@@ -33,10 +33,15 @@ const SignUp = () => {
       setLoading(false);
       navigate("/SignIn");
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Failed to create an account. Please try again."
-      );
+      // Type guard for AxiosError
+      if (axios.isAxiosError(err) && err.response) {
+        setError(
+          err.response.data.message ||
+            "Failed to create an account. Please try again."
+        );
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
       setLoading(false);
     }
   };

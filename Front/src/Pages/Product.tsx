@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import Select, { Option } from "react-tailwindcss-select";
+import Select from "react-tailwindcss-select";
 import { useDispatch } from "react-redux";
 import { ProductType } from "../components/@types/types";
 import ProductModal from "../components/Modal/ProductModal";
@@ -7,7 +7,10 @@ import { addItem } from "../redux/cartSlice";
 import axios from "axios";
 import { MdFavorite } from "react-icons/md";
 import { addFavourite } from "../redux/favouriteSlice";
-
+type Option = {
+  value: string;
+  label: string;
+};
 const Product: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(null);
   const [selectProduct, setSelectProduct] = useState<ProductType | null>(null);
@@ -54,8 +57,12 @@ const Product: React.FC = () => {
     [products, selectedCategory]
   );
 
-  const handleCategoryChange = (option: Option | null) => {
-    setSelectedCategory(option);
+  const handleCategoryChange = (option: Option | Option[] | null) => {
+    if (Array.isArray(option)) {
+      setSelectedCategory(option[0] || null);
+    } else {
+      setSelectedCategory(option);
+    }
   };
 
   const openModal = (product: ProductType) => {
