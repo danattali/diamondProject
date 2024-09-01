@@ -11,7 +11,9 @@ const port = 4000;
 app.use(express.json());
 app.use(cors());
 mongoose
-  .connect("mongodb://localhost:27017/diamond")
+  .connect(
+    "mongodb+srv://danattali:f4Ze6FhjNNAloDU5@dancluster.mfhakte.mongodb.net/ChicCharms?retryWrites=true&w=majority&appName=DanCluster"
+  )
   .then(() => {
     console.log("Connected to MongoDB");
   })
