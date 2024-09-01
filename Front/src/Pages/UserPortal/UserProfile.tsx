@@ -1,6 +1,5 @@
-
-import React, { useEffect, useState } from 'react'
-import Cookies from 'js-cookie';
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const UserProfile: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -14,14 +13,10 @@ const UserProfile: React.FC = () => {
     if (localName) {
       setFullName(localName);
     }
-  }
-    , [localEmail]);
-    
+  }, [localEmail]);
 
-  
   return (
     <div>
-      
       <div className="flex justify-center">
         <div className="w-1/2 bg-white p-4 m-4">
           <h1 className="text-2xl font-bold">Profile</h1>
@@ -35,9 +30,8 @@ const UserProfile: React.FC = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
-}
+};
 
 export default UserProfile;
