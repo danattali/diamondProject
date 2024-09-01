@@ -1,5 +1,5 @@
-import React from "react";
-import Select from "react-tailwindcss-select";
+import React, { useState, useEffect, useMemo } from "react";
+import Select, { Option } from "react-tailwindcss-select";
 import { useDispatch } from "react-redux";
 import { ProductType } from "../components/@types/types";
 import ProductModal from "../components/Modal/ProductModal";
@@ -8,77 +8,76 @@ import axios from "axios";
 import { MdFavorite } from "react-icons/md";
 import { addFavourite } from "../redux/favouriteSlice";
 
-// Import the Option type from react-tailwindcss-select
-import { Option } from "react-tailwindcss-select/dist/components/type";
-
 const Product: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = React.useState<Option | null>(
-    {
-      value: "all",
-      label: "All Categories",
-    }
-  );
-
-  const [selectProduct, setSelectProduct] = React.useState<ProductType | null>(
-    null
-  );
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Option | null>(null);
+  const [selectProduct, setSelectProduct] = useState<ProductType | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const [products, setProducts] = React.useState<ProductType[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    setIsLoading(true);
     axios
       .get("http://localhost:4000/products")
       .then((response) => {
         setProducts(response.data.products);
+        setError(null);
       })
       .catch((error) => {
-        console.log(error);
+        console.error("Error fetching products:", error);
+        setError("Failed to load products. Please try again later.");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
-  // Convert products to categories for Select options
-  const categories: Option[] = [
-    { value: "all", label: "All Categories" },
-    ...Array.from(
-      new Set((products || []).map((product) => product.category))
-    ).map((category) => ({ value: category, label: category })),
-  ];
+  const categories: Option[] = useMemo(
+    () => [
+      { value: "all", label: "All Categories" },
+      ...Array.from(new Set(products.map((product) => product.category))).map(
+        (category) => ({ value: category, label: category })
+      ),
+    ],
+    [products]
+  );
 
-  // Handle category change
-  const handleCategoryChange = (value: Option | null) => {
-    setSelectedCategory(value);
+  const filteredProducts = useMemo(
+    () =>
+      !selectedCategory || selectedCategory.value === "all"
+        ? products
+        : products.filter(
+            (product) => product.category === selectedCategory.value
+          ),
+    [products, selectedCategory]
+  );
+
+  const handleCategoryChange = (option: Option | null) => {
+    setSelectedCategory(option);
   };
 
-  // Filter products based on selected category
-  const filteredProducts =
-    selectedCategory?.value === "all"
-      ? products
-      : products.filter(
-          (product) => product.category === selectedCategory?.value
-        );
-
-  // Open product modal
   const openModal = (product: ProductType) => {
     setSelectProduct(product);
     setIsModalOpen(true);
   };
 
-  // Add product to cart
   const handleAddToCart = (product: ProductType) => {
     dispatch(addItem(product));
   };
 
-  // Close product modal
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectProduct(null);
   };
 
-  // Add product to favourites
   const handleAddToFavourite = (product: ProductType) => {
     dispatch(addFavourite(product));
   };
+
+  if (isLoading) return <div>Loading products...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -95,11 +94,11 @@ const Product: React.FC = () => {
             Filter by category
           </label>
           <Select
-            id="category"
-            className="mt-1"
-            options={categories}
-            onChange={handleCategoryChange}
+            primaryColor="indigo"
             value={selectedCategory}
+            onChange={handleCategoryChange}
+            options={categories}
+            isSearchable
             isClearable
           />
         </div>
@@ -116,6 +115,7 @@ const Product: React.FC = () => {
                 <MdFavorite
                   className="text-red-500 cursor-pointer"
                   onClick={() => handleAddToFavourite(product)}
+                  aria-label={`Add ${product.name} to favorites`}
                 />
               </div>
               <img

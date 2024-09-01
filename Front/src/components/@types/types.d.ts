@@ -53,7 +53,7 @@ export type CategoryOption = {
 export type ProductModalProps = {
   product: ProductType | null;
   isOpen: boolean;
-  img: string;
+  img?: string;
   closeModal: () => void;
 };
 
