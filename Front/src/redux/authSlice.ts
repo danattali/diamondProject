@@ -11,7 +11,7 @@ interface User {
   _id: string;
   fullName: string;
   userEmail: string;
-  rules: string; // This should correctly reflect the user's role, e.g., "admin"
+  rules: string;
   // Add other user properties as needed
 }
 
@@ -38,19 +38,19 @@ export const login = createAsyncThunk<
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
     const response = await axios.post("/auth/login", credentials);
-    const { user, token } = response.data;
+    console.log(response.data);
 
-    // Store user data in cookies
+    const { user, token } = response.data;
     Cookies.set("token", token);
     Cookies.set("user", JSON.stringify(user));
     Cookies.set("userId", user._id);
     Cookies.set("userEmail", user.userEmail);
     Cookies.set("fullName", user.fullName);
-    Cookies.set("rules", user.rules); // Store the user role in cookies
-
+    Cookies.set("rules", user.rules);
     localStorage.setItem("login", "true");
     return { user, token };
   } catch (error) {
+    // Check if error is an AxiosError and use its response data
     if (axios.isAxiosError(error) && error.response) {
       const errorMessage =
         (error.response.data as ErrorResponse).message || "Login failed";
@@ -69,6 +69,7 @@ export const fetchUserDetails = createAsyncThunk<
     const response = await axios.get("/auth/user");
     return response.data;
   } catch (error) {
+    // Check if error is an AxiosError and use its response data
     if (axios.isAxiosError(error) && error.response) {
       const errorMessage =
         (error.response.data as ErrorResponse).message ||
@@ -90,16 +91,9 @@ const authSlice = createSlice({
       state.user = null;
       state.isLoggedIn = false;
       state.token = null;
-
-      // Remove all related cookies
       Cookies.remove("token");
-      Cookies.remove("user");
-      Cookies.remove("userId");
-      Cookies.remove("userEmail");
-      Cookies.remove("fullName");
-      Cookies.remove("rules");
-
       localStorage.setItem("login", "false");
+      Cookies.remove("user");
     },
   },
   extraReducers: (builder) => {
@@ -112,9 +106,6 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
         state.user = action.payload.user;
         state.token = action.payload.token;
-
-        console.log("Logged in user type:", action.payload.user.rules);
-
         state.isLoading = false;
         state.error = null;
       })
