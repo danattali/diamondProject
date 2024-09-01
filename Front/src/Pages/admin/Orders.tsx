@@ -38,12 +38,12 @@ const AllOrder = () => {
     const fetchAllOrders = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/orders/AllOrders"
+          "https://diamondproject.onrender.com/orders/AllOrders"
         );
         const ordersWithUsers = await Promise.all(
           response.data.orders.map(async (order: Order) => {
             const userResponse = await axios.get(
-              `http://localhost:4000/auth/${order.user._id}` // Assuming order.user is the user's _id
+              `https://diamondproject.onrender.com/auth/${order.user._id}` // Assuming order.user is the user's _id
             );
             return {
               ...order,

@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-axios.defaults.baseURL = "http://localhost:4000";
+axios.defaults.baseURL = "https://diamondproject.onrender.com";
 
 axios.interceptors.request.use(
   (config) => {

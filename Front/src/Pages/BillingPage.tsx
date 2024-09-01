@@ -45,7 +45,7 @@ const BillingForm: React.FC = () => {
   const handleSubmitOrder = async () => {
     const _id = Cookies.get("userId");
     try {
-      await axios.post("http://localhost:4000/orders", {
+      await axios.post("https://diamondproject.onrender.com/orders", {
         userId: _id,
         items: cartItems,
         totalPrice: totalPrice,

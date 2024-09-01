@@ -48,7 +48,7 @@ const PurchaseHistory = () => {
       if (userId) {
         try {
           const response = await axios.get(
-            `http://localhost:4000/orders/orderByUserId/${userId}`
+            `https://diamondproject.onrender.com/orders/orderByUserId/${userId}`
           );
           setOrders(response.data.orders);
         } catch (err) {

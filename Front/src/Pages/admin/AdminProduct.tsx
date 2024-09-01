@@ -26,7 +26,9 @@ const AdminProduct: React.FC = () => {
 
   const getProduct = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/products");
+      const response = await axios.get(
+        "https://diamondproject.onrender.com/products"
+      );
       setProducts(response.data.products);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -59,7 +61,7 @@ const AdminProduct: React.FC = () => {
   const getProductById = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/products/${idProduct}`
+        `https://diamondproject.onrender.com/products/${idProduct}`
       );
       setName(response.data.product.name);
       setPrice(response.data.product.price);
@@ -92,7 +94,7 @@ const AdminProduct: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:4000/products", {
+      await axios.post("https://diamondproject.onrender.com/products", {
         name,
         price,
         category,
@@ -117,14 +119,17 @@ const AdminProduct: React.FC = () => {
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:4000/products/${idProduct}`, {
-        name,
-        price,
-        category,
-        image,
-        description,
-        quantity,
-      });
+      await axios.put(
+        `https://diamondproject.onrender.com/products/${idProduct}`,
+        {
+          name,
+          price,
+          category,
+          image,
+          description,
+          quantity,
+        }
+      );
       alert("Product updated successfully");
       closeModal();
       getProduct();
@@ -142,7 +147,7 @@ const AdminProduct: React.FC = () => {
 
   const handleDeleteProduct = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:4000/products/${id}`);
+      await axios.delete(`https://diamondproject.onrender.com/products/${id}`);
       alert("Product deleted successfully");
       getProduct();
       setError(null); // Clear error after successful operation

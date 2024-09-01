@@ -26,7 +26,7 @@ const SignUp = () => {
     try {
       setError("");
       setLoading(true);
-      await axios.post("http://localhost:4000/auth/register", {
+      await axios.post("https://diamondproject.onrender.com/auth/register", {
         ...data,
         rules: "user",
       });

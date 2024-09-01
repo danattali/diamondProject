@@ -15,7 +15,9 @@ const AllUsers = () => {
 
   const handleAllUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/auth");
+      const response = await axios.get(
+        "https://diamondproject.onrender.com/auth"
+      );
       console.log(response.data);
       setUsers(response.data.users);
     } catch (error) {
@@ -39,9 +41,12 @@ const AllUsers = () => {
     console.log("Payload being sent:", { rules: updatedRules }); // Logging the payload
 
     try {
-      await axios.put(`http://localhost:4000/auth/${userId}/rules`, {
-        rules: updatedRules,
-      });
+      await axios.put(
+        `https://diamondproject.onrender.com/auth/${userId}/rules`,
+        {
+          rules: updatedRules,
+        }
+      );
       setUsers((prev) =>
         prev.map((user) =>
           user._id === userId ? { ...user, rules: e.target.value } : user

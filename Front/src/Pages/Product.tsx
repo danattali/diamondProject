@@ -23,7 +23,7 @@ const Product: React.FC = () => {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:4000/products")
+      .get("https://diamondproject.onrender.com/products")
       .then((response) => {
         setProducts(response.data.products);
         setError(null);
