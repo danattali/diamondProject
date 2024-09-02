@@ -45,7 +45,7 @@ const AllOrder = () => {
           response.data.orders.map(async (order: Order) => {
             console.log(order);
             const userResponse = await axios.get(
-              `https://diamondproject.onrender.com/auth/${order._id}` // Assuming order.user is the user's _id
+              `⁠ https://diamondproject.onrender.com/auth/${order.user} ⁠` // Assuming order.user is the user's _id
             );
             return {
               ...order,
