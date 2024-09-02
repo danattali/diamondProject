@@ -146,7 +146,7 @@ const Header = () => {
                 leaveTo="transform opacity-0 scale-95"
               >
                 <Popover.Panel
-                  onMouseEnter={() => setIsPersonMenuOpen(true)} // שמירה על פתיחה
+             
                   onMouseLeave={() => setIsPersonMenuOpen(false)} // סגירה כשמפסיקים לרחף
                   className="absolute right-0 top-14 w-48 bg-white text-blue-500 rounded-lg shadow-lg"
                   style={{ zIndex: 1000 }}
