@@ -131,10 +131,7 @@ const Header = () => {
               </button>
             </form>
             {/* person logo */}
-            <Popover
-              onMouseEnter={() => setIsPersonMenuOpen(true)}
-              onMouseLeave={() => setIsPersonMenuOpen(false)}
-            >
+            <Popover onMouseEnter={() => setIsPersonMenuOpen(true)}>
               <Popover.Button onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 <IoMdPerson className="text-3xl cursor-pointer" />
               </Popover.Button>
@@ -149,6 +146,8 @@ const Header = () => {
                 leaveTo="transform opacity-0 scale-95"
               >
                 <Popover.Panel
+                  onMouseEnter={() => setIsPersonMenuOpen(true)} // שמירה על פתיחה
+                  onMouseLeave={() => setIsPersonMenuOpen(false)} // סגירה כשמפסיקים לרחף
                   className="absolute right-0 top-14 w-48 bg-white text-blue-500 rounded-lg shadow-lg"
                   style={{ zIndex: 1000 }}
                 >

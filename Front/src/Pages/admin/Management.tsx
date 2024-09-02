@@ -19,6 +19,7 @@ const Management: React.FC = () => {
     <div
       style={{
         height: "80vh",
+        zIndex:"-1"
       }}
     >
       <div

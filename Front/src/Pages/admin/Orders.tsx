@@ -62,7 +62,10 @@ const AllOrder = () => {
   }, []);
 
   return (
-    <div className="relative overflow-x-auto min-h-screen">
+    <div
+      className="relative overflow-x-auto min-h-screen"
+      style={{ zIndex: "-1" }}
+    >
       <div className="container mx-auto">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white pt-20">
           All Orders

@@ -164,7 +164,10 @@ const AdminProduct: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-center items-center bg-gray-200 h-full">
+      <div
+        className="flex justify-center items-center bg-gray-200 h-full"
+        style={{ zIndex: "-1" }}
+      >
         <div className="flex justify-center">
           <div className="w-100 bg-white p-4 m-4">
             <h1 className="text-2xl font-bold">Admin Product</h1>
