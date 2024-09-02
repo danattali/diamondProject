@@ -22,6 +22,13 @@ import AllUsers from "./Pages/admin/AllUsers";
 import AllOrder from "./Pages/admin/Orders";
 
 function App() {
+  const handleSubmitOrder = async () => {
+    try {
+      console.log("Order submitted successfully");
+    } catch (error) {
+      console.error("Error submitting order:", error);
+    }
+  };
   return (
     <>
       <Router>
@@ -43,12 +50,14 @@ function App() {
             <Route path="/Admin/AllOrder" element={<AllOrder />} />
             <Route path="/Checkout" element={<CartPage />} />
             <Route path="/UserPortal/UserProfile" element={<UserProfile />} />
-
             <Route
               path="/UserPortal/PurchaseHistory"
               element={<PurchaseHistory />}
             />
-            <Route path="/PayCreditCard" element={<PayCreditCard />} />
+            <Route
+              path="/PayCreditCard"
+              element={<PayCreditCard onSubmitOrder={handleSubmitOrder} />}
+            />{" "}
             <Route
               path="/UserPortal/PaymentMethod"
               element={<PaymentMethod />}

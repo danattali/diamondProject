@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import PaymentForm from "./PayCreditCard";
+import PaymentForm from "./PayCreditCard"; // Ensure this path is correct
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
+// Define the interface for billing form state
 interface BillingFormState {
   firstName: string;
   lastName: string;
@@ -26,8 +27,8 @@ const BillingForm: React.FC = () => {
     zipCode: "",
   });
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -42,7 +43,7 @@ const BillingForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const validateForm = (): boolean => {
@@ -66,23 +67,24 @@ const BillingForm: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setSuccessMessage(null);
-    const _id = Cookies.get("userId");
+    const userId = Cookies.get("userId") || "";
+
     try {
       const response = await axios.post(
         "https://diamondproject.onrender.com/orders",
         {
-          userId: _id,
+          userId,
           items: cartItems,
-          totalPrice: totalPrice,
+          totalPrice,
           shippingAddress: formData,
         }
       );
       console.log("Order submitted successfully:", response.data);
-      setSuccessMessage("ההזמנה אושרה!");
+      setSuccessMessage("Order submitted successfully!");
 
       setTimeout(() => {
         toggleModal();
-        // You might want to dispatch an action to clear the cart here
+        // Optionally dispatch an action to clear the cart here
         // and/or redirect to a confirmation page
       }, 2000);
     } catch (error) {
@@ -99,6 +101,7 @@ const BillingForm: React.FC = () => {
         Billing Information
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Your form fields go here */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label
@@ -228,9 +231,12 @@ const BillingForm: React.FC = () => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:ring-4 focus:ring-indigo-500"
+            className={`mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:ring-4 focus:ring-indigo-500 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
           >
-            Proceed to Payment
+            {isLoading ? "Processing..." : "Proceed to Payment"}
           </button>
         </div>
       </form>
@@ -239,33 +245,6 @@ const BillingForm: React.FC = () => {
         <div className="fixed inset-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50">
           <div className="relative p-4 w-full max-w-2xl max-h-full">
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Payment
-                </h3>
-                <button
-                  type="button"
-                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                  onClick={toggleModal}
-                >
-                  <svg
-                    className="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7L1 13"
-                    />
-                  </svg>
-                  <span className="sr-only">Close modal</span>
-                </button>
-              </div>
               <div className="p-4">
                 <PaymentForm
                   formData={formData}
