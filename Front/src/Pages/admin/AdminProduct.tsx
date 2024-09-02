@@ -81,6 +81,7 @@ const AdminProduct: React.FC = () => {
   };
 
   const closeModal = () => {
+    setIsOpen(false);
     setIsOpenEdit(false);
     setIdProduct("");
     setName("");
