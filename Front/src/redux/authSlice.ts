@@ -46,7 +46,7 @@ export const login = createAsyncThunk<
     Cookies.set("userId", user._id);
     Cookies.set("userEmail", user.userEmail);
     Cookies.set("fullName", user.fullName);
-    Cookies.set("rules", user.rules);
+    Cookies.set("rules", user.rules.name);
     localStorage.setItem("login", "true");
     return { user, token };
   } catch (error) {
@@ -94,6 +94,10 @@ const authSlice = createSlice({
       Cookies.remove("token");
       localStorage.setItem("login", "false");
       Cookies.remove("user");
+      Cookies.remove("userId");
+      Cookies.remove("userEmail");
+      Cookies.remove("fullName");
+      Cookies.remove("rules");
     },
   },
   extraReducers: (builder) => {
