@@ -46,8 +46,15 @@ const Header = () => {
 
   const logout = () => {
     Cookies.remove("token");
+    Cookies.remove("rules");
+    Cookies.remove("userEmail");
+    Cookies.remove("fullName");
+    Cookies.remove("user");
+    Cookies.remove("userId");
+    localStorage.removeItem("login");
 
     dispatch(clearCart());
+
     setLogin("");
     navigate("/");
 
@@ -146,7 +153,6 @@ const Header = () => {
                 leaveTo="transform opacity-0 scale-95"
               >
                 <Popover.Panel
-             
                   onMouseLeave={() => setIsPersonMenuOpen(false)} // סגירה כשמפסיקים לרחף
                   className="absolute right-0 top-14 w-48 bg-white text-blue-500 rounded-lg shadow-lg"
                   style={{ zIndex: 1000 }}
