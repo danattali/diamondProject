@@ -11,14 +11,14 @@ import SideBar from "../sideBar/SideBar";
 import FavoriteSideBar from "../sideBar/FavoriteSideBar";
 import { clearCart, setSearch } from "../../redux/cartSlice";
 import Cookies from "js-cookie";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link, useNavigate } from "react-router-dom"; // Import Link for navigation
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [login, setLogin] = useState<string>("");
   const [userType, setUserType] = useState<string>("");
   const [isPersonMenuOpen, setIsPersonMenuOpen] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   const projectNumber = useSelector((state: RootState) =>
     state?.cart?.items?.reduce((total, item) => total + item.quantity, 0)
   );
@@ -45,20 +45,12 @@ const Header = () => {
   const ifLoggedIn = localStorage.getItem("login");
 
   const logout = () => {
-    localStorage.removeItem("login");
-    localStorage.removeItem("userType");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("_id");
-    localStorage.removeItem("state");
-    Cookies.remove("userId");
-    Cookies.remove("cart");
-    Cookies.remove("favourite");
-    Cookies.remove("user");
     Cookies.remove("token");
 
     dispatch(clearCart());
     setLogin("");
+    navigate("/");
+
     alert("Logged out successfully");
     window.location.reload();
   };

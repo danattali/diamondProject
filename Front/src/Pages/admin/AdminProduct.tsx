@@ -163,7 +163,7 @@ const AdminProduct: React.FC = () => {
   };
 
   return (
-    <div style={{ height: "80vh" }}>
+    <div>
       <div className="flex justify-center items-center bg-gray-200 h-full">
         <div className="flex justify-center">
           <div className="w-100 bg-white p-4 m-4">
