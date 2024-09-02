@@ -25,10 +25,7 @@ interface PaymentFormProps {
   onSubmitOrder: () => Promise<void>;
 }
 
-const PayCreditCard: React.FC<PaymentFormProps> = ({
-  formData,
-  onSubmitOrder,
-}) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({ onSubmitOrder }) => {
   const [state, setState] = useState<State>({
     number: "",
     expiry: "",
@@ -164,4 +161,4 @@ const PayCreditCard: React.FC<PaymentFormProps> = ({
   );
 };
 
-export default PayCreditCard;
+export default PaymentForm;
