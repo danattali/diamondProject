@@ -25,10 +25,7 @@ interface PaymentFormProps {
   onSubmitOrder: () => void;
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({
-  formData,
-  onSubmitOrder,
-}) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({ onSubmitOrder }) => {
   const [state, setState] = useState<State>({
     number: "",
     expiry: "",
