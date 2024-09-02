@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 
 interface User {
-  _id: string;
+  id: string;
   fullName: string;
   userEmail: string;
   telephone: string;
@@ -22,7 +22,8 @@ interface OrderItems {
   product: string;
 }
 interface Order {
-  _id: string;
+  id: string;
+  _id?: string;
   shippingAddress: ShippingAddress;
   orderNumber: string;
   orderDate: string;
@@ -42,8 +43,9 @@ const AllOrder = () => {
         );
         const ordersWithUsers = await Promise.all(
           response.data.orders.map(async (order: Order) => {
+            console.log(order);
             const userResponse = await axios.get(
-              `https://diamondproject.onrender.com/auth/${order.user._id}` // Assuming order.user is the user's _id
+              `https://diamondproject.onrender.com/auth/${order._id}` // Assuming order.user is the user's _id
             );
             return {
               ...order,
@@ -93,7 +95,7 @@ const AllOrder = () => {
           <tbody>
             {orders.map((order, index) => (
               <tr
-                key={order._id}
+                key={order.id}
                 className={`${
                   index % 2 === 0 ? "bg-white" : "bg-gray-50"
                 } border-b dark:bg-gray-800 dark:border-gray-700`}

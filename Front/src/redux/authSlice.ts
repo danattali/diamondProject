@@ -43,12 +43,12 @@ export const login = createAsyncThunk<
     const { user, token } = response.data;
     Cookies.set("token", token);
     Cookies.set("user", JSON.stringify(user));
-    Cookies.set("userId", user._id);
+    Cookies.set("userId", user.id);
     Cookies.set("userEmail", user.email);
     Cookies.set("fullName", user.fullName);
     Cookies.set("rules", user.rules.name);
     localStorage.setItem("login", "true");
-    
+
     return { user, token };
   } catch (error) {
     // Check if error is an AxiosError and use its response data

@@ -27,10 +27,17 @@ const BillingForm: React.FC = () => {
   });
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
+
   const toggleModal = () => {
     setIsOpen(!isOpen);
+    setError(null);
+    setSuccessMessage(null);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,23 +45,54 @@ const BillingForm: React.FC = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const validateForm = (): boolean => {
+    for (const [key, value] of Object.entries(formData)) {
+      if (!value.trim()) {
+        setError(`${key.charAt(0).toUpperCase() + key.slice(1)} is required.`);
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toggleModal();
-  };
-  const handleSubmitOrder = async () => {
-    const _id = Cookies.get("userId");
-    try {
-      await axios.post("https://diamondproject.onrender.com/orders", {
-        userId: _id,
-        items: cartItems,
-        totalPrice: totalPrice,
-        shippingAddress: formData,
-      });
-    } catch (error) {
-      console.error(error);
+    if (validateForm()) {
+      toggleModal();
     }
   };
+
+  const handleSubmitOrder = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+    const _id = Cookies.get("userId");
+    try {
+      const response = await axios.post(
+        "https://diamondproject.onrender.com/orders",
+        {
+          userId: _id,
+          items: cartItems,
+          totalPrice: totalPrice,
+          shippingAddress: formData,
+        }
+      );
+      console.log("Order submitted successfully:", response.data);
+      setSuccessMessage("ההזמנה אושרה!");
+
+      setTimeout(() => {
+        toggleModal();
+        // You might want to dispatch an action to clear the cart here
+        // and/or redirect to a confirmation page
+      }, 2000);
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      setError("Failed to submit order. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-white shadow-md rounded-lg">
       <h2 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">
@@ -185,23 +223,20 @@ const BillingForm: React.FC = () => {
           </div>
         </div>
 
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+
         <div className="flex justify-end">
           <button
             type="submit"
             className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:ring-4 focus:ring-indigo-500"
           >
-            Pay
+            Proceed to Payment
           </button>
         </div>
       </form>
 
       {isOpen && (
-        <div
-          id="default-modal"
-          tabIndex={-1}
-          aria-hidden="true"
-          className="fixed inset-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
-        >
+        <div className="fixed inset-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50">
           <div className="relative p-4 w-full max-w-2xl max-h-full">
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
@@ -232,25 +267,17 @@ const BillingForm: React.FC = () => {
                 </button>
               </div>
               <div className="p-4">
-                <PaymentForm formData={formData} />
+                <PaymentForm
+                  formData={formData}
+                  onSubmitOrder={handleSubmitOrder}
+                />
               </div>
-              <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                <button
-                  onClick={() => {
-                    toggleModal();
-                    handleSubmitOrder();
-                  }}
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  I accept
-                </button>
-                <button
-                  onClick={toggleModal}
-                  className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                >
-                  Decline
-                </button>
-              </div>
+              {error && <div className="text-red-600 text-sm p-4">{error}</div>}
+              {successMessage && (
+                <div className="text-green-600 text-sm p-4 font-bold">
+                  {successMessage}
+                </div>
+              )}
             </div>
           </div>
         </div>
